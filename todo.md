@@ -225,3 +225,57 @@ This document breaks down the "Data Consistency" and "Navigation Logic" fixes in
     * Use a smooth height transition (animate-in).
 5.  **Rendering Logic:**
     * Move any event present in `completedEventIds` from the top "Active" area to this bottom "Action Log" list.
+
+---
+> **🚨 URGENT FIXES (Implementation Corrections)**
+> 이전 작업에서 누락되거나 잘못 구현된 사항들을 즉시 수정합니다.
+
+## ✅ Task 14: Force Deduplication in My Thesis Tab
+**Target File:** `src/contexts/StoreContext.tsx`
+**Goal:** Fix the issue where "Google" appears twice in the Idea Tab (one from dummy data, one from OCR sync).
+
+**Instructions:**
+1.  **Locate `initialData.myThesis`:**
+    * You will likely find an existing hardcoded entry for "GOOGL" (or "Alphabet A"). **Delete it completely.**
+    * `myThesis` should start **empty** OR contain *only* the specific scenarios required for the demo that do NOT overlap with the user's asset holdings.
+2.  **Logic Update in `addToMyThesis` (Safety Check):**
+    * Inside `addToMyThesis`, add a check before pushing to state:
+    * `const exists = prev.myThesis.some(t => t.ticker === stock.ticker);`
+    * `if (exists) return prev;` (Prevent adding if already there).
+
+## ✅ Task 15: Implement "Related Info" Toggle (Quiz UI Fix)
+**Target File:** `src/components/onboarding/OnboardingFlow.tsx`
+**Goal:** The "Hint" button inside the 'IDK' option is broken. Replace it with a global "Related Info" toggle below the options.
+
+**Instructions:**
+1.  **Remove Old Hint:** Inside the Quiz render section, **remove** the "힌트 보기" icon/text from the `idk` option button.
+2.  **Add Toggle Component:**
+    * **Location:** *Below* the list of option buttons.
+    * **UI:** A centered or left-aligned text button: `Context Toggle` (e.g., "💡 이 질문이 중요한 이유" + Chevron Icon).
+3.  **Expandable Content:**
+    * When clicked, render a container (`bg-white/5 p-4 rounded-xl mt-4`).
+    * **Content:** Display structured text (bullet points) explaining the market context of the question.
+    * *Note:* If `relatedInfo` data is missing in `StoreContext`, hardcode a default explanation for the Google demo for now.
+    * **Hardcoded Text for Google Demo:**
+        * Title: "검색 독점 소송이란?"
+        * Bullet 1: "미 법무부가 구글의 검색 시장 독점이 불법이라고 제소한 사건입니다."
+        * Bullet 2: "패소 시 최악의 경우, 기업 분할 명령이 내려질 수 있어 주가 불확실성이 큽니다."
+
+## ✅ Task 16: Fix Splash Screen Tagline
+**Target File:** `src/components/onboarding/OnboardingFlow.tsx`
+**Goal:** The tagline "감이 아닌, 논리로." is missing.
+
+**Instructions:**
+1.  Navigate to the `step === 'splash'` render block.
+2.  Ensure the code looks exactly like this:
+    ```tsx
+    <div className="flex flex-col items-center justify-center ...">
+       {/* Logo */}
+       <h1 className="text-7xl font-black ... text-transparent">Hypo</h1>
+       
+       {/* MISSING TAGLINE - ADD THIS */}
+       <p className="text-xl text-zinc-400 mt-4 font-medium tracking-tight animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-300">
+         감이 아닌, 논리로.
+       </p>
+    </div>
+    ```

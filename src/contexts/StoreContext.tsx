@@ -634,103 +634,6 @@ const initialData: AppData = {
   hotIssues: [],
   myThesis: [
     {
-      id: 1,
-      ticker: "GOOGL",
-      name: "구글",
-      currentPrice: 175.4,
-      changeRate: -1.2,
-      status: "Invested",
-      bigThesis: "AI 시대의 최종 승자는 데이터와 자본을 가진 구글이다",
-      companyProfile: {
-          summary: "전 세계 검색 시장의 90%를 장악한 검색 제왕",
-          description: "구글은 우리가 궁금한 것을 검색할 때 쓰는 검색창뿐만 아니라, 유튜브, 안드로이드, 그리고 구글 클라우드까지 운영하는 거대 IT 기업입니다."
-      },
-      logicBlocks: [
-        { 
-            id: 'l1', 
-            icon: "Cloud", 
-            title: "클라우드 성장", 
-            desc: "기업들의 AI 도입으로 클라우드 매출 매년 20% 성장", 
-            isActive: true,
-            history: [
-                { date: '24.10.15', type: 'Success', category: 'Decision', text: '주가 하락 방어 성공', badgeText: '+5% 손실 회피' },
-                { date: '24.10.01', type: 'Positive', category: 'News', text: '3분기 클라우드 매출 28% 증가 (예상 상회)' },
-                { date: '24.09.20', type: 'Neutral', category: 'News', text: '경쟁사 MS Azure 성장률 둔화' }
-            ]
-        },
-        { 
-            id: 'l2', 
-            icon: "Cpu", 
-            title: "자체 칩(TPU) 효과", 
-            desc: "외부 칩 의존도를 낮춰 마진율 개선", 
-            isActive: true,
-            history: [
-                 { date: '24.08.12', type: 'Negative', category: 'News', text: '초기 수율 문제 관련 루머 확산' }
-            ]
-        }
-      ],
-      // [SCENARIO: PRE-EVENT]
-      events: [
-        { 
-            dDay: "D-1", 
-            title: "3분기 실적 발표", 
-            type: "Earnings", 
-            impact: "High", 
-            status: "Upcoming",
-            actionScenario: {
-                phase: 'Pre-Event',
-                title: "내일 실적 발표, 어떻게 예상하세요?",
-                description: "월가는 매출 15% 성장을 기대하고 있습니다. 특히 클라우드 부문 마진율 개선이 핵심 관전 포인트입니다. 당신의 가설(클라우드 성장)과 일치하나요?",
-                options: [
-                    { label: "기대 이상일 것 (비중 확대)", actionType: 'buy', sentiment: 'Positive' },
-                    { label: "예상 부합 (유지)", actionType: 'hold', sentiment: 'Neutral' },
-                    { label: "실망스러울 것 (비중 축소)", actionType: 'sell', sentiment: 'Negative' }
-                ]
-            }
-        }
-      ],
-      newsTags: [
-        { type: "Positive", text: "클라우드 부문 영업이익률 역대 최고치 경신 전망", date: "Just now", analystComment: "클라우드 마진 개선 가설에 힘을 실어주는 뉴스입니다." }
-      ],
-      dailyBriefing: "실적 발표를 하루 앞두고 있습니다. 시장의 기대치가 높아진 상태라 작은 미스에도 변동성이 커질 수 있습니다.",
-      quizData: [
-        {
-            id: 1,
-            category: 'LongTerm',
-            question: "생성형 AI 검색(ChatGPT 등)이\n구글을 위협할까요?",
-            options: [
-              { text: "검색 광고 매출이 줄어들 것이다.", type: 'bear', relatedLogicId: 'l1' },
-              { text: "AI 결합으로 검색 시장을 더 키울 것이다.", type: 'bull', relatedLogicId: 'l2' },
-              { text: "잘 모르겠어요", type: 'idk' }
-            ],
-            relatedInfo: {
-              title: "검색 시장의 변화",
-              content: [
-                "구글은 *90% 이상의 검색 점유율*을 20년 가까이 유지해왔습니다.",
-                "하지만 챗GPT와 같은 *생성형 AI*가 정답을 바로 알려주면서 검색 패턴이 바뀌고 있습니다.",
-                "유튜브와 안드로이드 생태계가 강력한 *방어막(Lock-in)* 역할을 하고 있습니다."
-              ]
-            }
-        }
-      ],
-      chartHistory: {
-        '1D': generateChart(177, 24, 'down'),
-        '1W': generateChart(178, 20, 'volatile'),
-        '1M': generateChart(168, 30, 'up'),
-        '3M': generateChart(155, 45, 'up'),
-        '1Y': generateChart(130, 60, 'up'),
-        '5Y': generateChart(100, 60, 'up'),
-      },
-      chartNarratives: {
-        '1D': '실적 경계감으로 소폭 조정 중입니다.',
-        '1W': '단기 변동성이 확대되고 있으나 175달러 지지선을 지키고 있습니다.',
-        '1M': 'AI 모델 제미나이 발표 이후 우상향 추세가 뚜렷합니다.',
-        '3M': '클라우드 마진 개선 기대감이 주가에 반영되기 시작했습니다.',
-        '1Y': 'AI 전환기의 과도기적 주가 흐름을 지나 성장 궤도에 진입했습니다.',
-        '5Y': '검색 광고 독점력을 바탕으로 꾸준한 현금 흐름을 창출해왔습니다.'
-      }
-    },
-    {
       id: 2,
       ticker: "TSLA",
       name: "테슬라",
@@ -935,6 +838,12 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   const addToMyThesis = (stock: SearchResultSample, selectedLogicIds: number[], investmentType: string, amount?: string): Thesis => {
+    // 0. Safety Check: Deduplication
+    const existingThesis = data.myThesis.find(t => t.ticker === stock.ticker);
+    if (existingThesis) {
+        return existingThesis;
+    }
+
     // 1. Create Logic Blocks from selected IDs
     const selectedLogicBlocks = stock.availableLogicBlocks.filter(l => 
         selectedLogicIds.includes(Number(l.id))

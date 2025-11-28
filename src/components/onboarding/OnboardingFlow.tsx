@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Camera, Bell, Check, Layers, ArrowRight, X, ChevronRight, HelpCircle, Quote, Info, SkipForward, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore, ALL_STOCKS } from '../../contexts/StoreContext';
@@ -110,6 +109,15 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
   const progress = ((currentQuizIndex + 1) / quizData.length) * 100;
   const currentCategory: QuizCategory = currentQuestion?.category || 'LongTerm';
 
+  // Fallback for Related Info
+  const infoData = currentQuestion?.relatedInfo || {
+      title: "검색 독점 소송이란?",
+      content: [
+          "미 법무부가 구글의 검색 시장 독점이 불법이라고 제소한 사건입니다.",
+          "패소 시 최악의 경우, 기업 분할 명령이 내려질 수 있어 주가 불확실성이 큽니다."
+      ]
+  };
+
   const handleQuizAnswer = (option: any) => {
       // 1. Collect Logic
       if (option.relatedLogicId) {
@@ -164,7 +172,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
       
       {/* --- STEP 1: SPLASH --- */}
       {step === 'splash' && (
-        <div className="w-full h-full flex flex-col items-center justify-center animate-in fade-in duration-1000 text-center px-6 gap-8">
+        <div className="w-full h-full flex flex-col items-center justify-center animate-in fade-in duration-1000 text-center px-6">
           {/* Logo Wrapper to handle spacing and clipping safety */}
           <div className="relative py-2">
             <h1 className="text-7xl font-black tracking-tighter bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent leading-none pb-2">
@@ -172,8 +180,8 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
             </h1>
           </div>
           {/* Tagline */}
-          <p className="text-lg sm:text-xl text-zinc-200 font-medium tracking-tight relative z-10">
-            자극과 충동이 아닌 논리와 스토리로 투자하기
+          <p className="text-xl text-zinc-400 mt-4 font-medium tracking-tight animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-300">
+            감이 아닌, 논리로.
           </p>
         </div>
       )}
@@ -441,32 +449,32 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
                   ))}
                </div>
 
-               {/* Related Info Toggle (New) */}
-               {currentQuestion.relatedInfo && (
-                 <div className="animate-in fade-in slide-in-from-bottom-4">
-                   <button 
-                     onClick={() => setIsInfoExpanded(!isInfoExpanded)}
-                     className="flex items-center space-x-2 text-zinc-500 hover:text-white font-bold text-sm transition-colors mb-2"
-                   >
-                     <span>관련 내용 보기</span>
-                     {isInfoExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                   </button>
-                   
-                   {isInfoExpanded && (
-                     <div className="bg-white/5 p-5 rounded-xl border border-white/5 animate-in zoom-in-95 duration-200">
-                        <h4 className="text-base font-bold text-app-accent mb-3">{currentQuestion.relatedInfo.title}</h4>
-                        <ul className="space-y-2">
-                          {currentQuestion.relatedInfo.content.map((point, i) => (
-                            <li key={i} className="text-zinc-300 text-sm leading-relaxed flex items-start">
-                              <span className="mr-2 mt-1.5 w-1 h-1 bg-zinc-500 rounded-full shrink-0" />
-                              <span>{renderParsedContent(point)}</span>
-                            </li>
-                          ))}
-                        </ul>
-                     </div>
-                   )}
-                 </div>
-               )}
+               {/* Related Info Toggle (Updated) */}
+               <div className="animate-in fade-in slide-in-from-bottom-4">
+                 <button 
+                   onClick={() => setIsInfoExpanded(!isInfoExpanded)}
+                   className="flex items-center space-x-2 text-zinc-500 hover:text-white font-bold text-sm transition-colors mb-2"
+                 >
+                   <Info size={16} />
+                   <span>관련 정보</span>
+                   {isInfoExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                 </button>
+                 
+                 {isInfoExpanded && (
+                   <div className="bg-white/5 p-5 rounded-xl border border-white/5 animate-in zoom-in-95 duration-200">
+                      <h4 className="text-base font-bold text-app-accent mb-3">{infoData.title}</h4>
+                      <ul className="space-y-2">
+                        {infoData.content.map((point, i) => (
+                          <li key={i} className="text-zinc-300 text-sm leading-relaxed flex items-start">
+                            <span className="mr-2 mt-1.5 w-1 h-1 bg-zinc-500 rounded-full shrink-0" />
+                            <span>{renderParsedContent(point)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                   </div>
+                 )}
+               </div>
+
             </div>
         </div>
       )}
