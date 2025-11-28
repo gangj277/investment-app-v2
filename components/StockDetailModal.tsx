@@ -1,8 +1,8 @@
 
-
 import React, { useRef, useState, useEffect } from 'react';
-import { X, CheckCircle2, TrendingUp, Clock, BookOpen, ChevronDown, ChevronUp, MessageSquareQuote, ChevronRight, Vote, Check, AlertTriangle, ArrowRight, Activity, Calendar } from 'lucide-react';
-import { Thesis, TimeFrame, EventActionScenario, ActionOption, LogicBlock } from '../types';
+import { X, CheckCircle2, TrendingUp, Clock, BookOpen, ChevronDown, ChevronUp, MessageSquareQuote, ChevronRight, Vote, Check, AlertTriangle, ArrowRight, Activity, Calendar, Play, FileText, ArrowRightLeft } from 'lucide-react';
+import { Thesis, TimeFrame, EventActionScenario, ActionOption, LogicBlock, Event } from '../types';
+import { useStore } from '../contexts/StoreContext';
 
 interface StockDetailModalProps {
   stock: Thesis;
@@ -12,112 +12,227 @@ interface StockDetailModalProps {
   onAddLogic?: () => void;
 }
 
-// --- SUB COMPONENT: STATEFUL EVENT ACTION CARD ---
-const EventActionCard: React.FC<{ scenario: EventActionScenario }> = ({ scenario }) => {
-  // Steps: 'predict' -> 'analysis' -> 'done'
-  const [step, setStep] = useState<'predict' | 'analysis'>('predict');
-  const [selectedPrediction, setSelectedPrediction] = useState<string | null>(null);
+// --- SUB COMPONENT: REDESIGNED EVENT ACTION CARD ---
+const EventActionCard: React.FC<{ event: Event }> = ({ event }) => {
+  const scenario = event.actionScenario;
+  if (!scenario) return null;
 
-  const handlePredict = (label: string) => {
-    setSelectedPrediction(label);
-    // Simulate processing delay for effect
-    setTimeout(() => {
-        setStep('analysis');
-    }, 600);
-  };
+  // Distinguish Phase based on Event Status or Scenario Phase
+  const isPreEvent = scenario.phase === 'Pre-Event' || event.status === 'Upcoming';
 
-  const handleFinalAction = (actionLabel: string) => {
-      alert(`[${actionLabel}] 액션이 설정되었습니다. 이슈 발생 시 가장 먼저 알림을 드립니다.`);
-  };
+  // --- PRE-EVENT STATE (Strategy Builder) ---
+  const [condition, setCondition] = useState<'Better' | 'Worse'>('Better');
+  const [selectedAction, setSelectedAction] = useState<'buy' | 'hold' | 'sell' | null>(null);
+  const [isStrategySaved, setIsStrategySaved] = useState(false);
 
-  return (
-    <div className="mb-8 animate-in slide-in-from-top-4 duration-700 ease-out">
-        <div className={`relative overflow-hidden rounded-[32px] transition-all duration-500 ${step === 'predict' ? 'bg-[#1E1E1E] border border-white/10' : 'bg-indigo-900/30 border border-indigo-500/30 shadow-[0_0_40px_rgba(99,102,241,0.2)]'}`}>
-            
-            {/* Background Decor */}
-            <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
-                <Vote size={140} className="text-white transform rotate-12" />
-            </div>
+  // --- POST-EVENT STATE (Execution) ---
+  const [executionStatus, setExecutionStatus] = useState<'Pending' | 'Executed' | 'Revised'>('Pending');
 
-            {/* --- STEP 1: PREDICTION --- */}
-            {step === 'predict' && (
-                <div className="p-7 animate-in fade-in slide-in-from-right-4 duration-300">
-                    <div className="flex items-center space-x-2 mb-4">
-                        <span className="px-2.5 py-1 rounded-full text-[11px] font-black bg-app-accent text-white uppercase tracking-wide">
-                            D-Day Prediction
-                        </span>
-                        <span className="text-xs text-zinc-500 font-bold">참여 시 맞춤 전략 제공</span>
+  // --- RENDER: PRE-EVENT (Scenario Planner) ---
+  if (isPreEvent) {
+      if (isStrategySaved) {
+          // 1-B. Strategy Saved View
+          return (
+            <div className="mb-6 animate-in zoom-in duration-300">
+                <div className="bg-[#1E1E1E] rounded-[24px] p-6 border border-app-positive/30 shadow-[0_0_30px_rgba(34,197,94,0.1)] relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-6 opacity-10">
+                        <CheckCircle2 size={80} className="text-app-positive" />
                     </div>
+                    <div className="relative z-10">
+                        <div className="flex items-center space-x-2 mb-3">
+                            <div className="bg-app-positive text-black text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Strategy Set</div>
+                            <span className="text-xs font-bold text-zinc-500">{event.dDay} {event.type}</span>
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-1">대응 전략 수립 완료</h3>
+                        <p className="text-zinc-400 text-sm mb-4">
+                            설정하신 조건에 따라 알림을 보내드립니다.
+                        </p>
+                        
+                        <div className="bg-black/40 rounded-xl p-4 border border-white/5 mb-4">
+                            <div className="flex items-center justify-between text-sm mb-1">
+                                <span className="text-zinc-500">조건</span>
+                                <span className={`font-bold ${condition === 'Better' ? 'text-app-positive' : 'text-app-negative'}`}>
+                                    결과가 {condition === 'Better' ? '기대 이상' : '실망스러울'} 때
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="text-zinc-500">대응</span>
+                                <span className="font-bold text-white">
+                                    {selectedAction === 'buy' ? '비중 확대 (Buy)' : selectedAction === 'sell' ? '비중 축소 (Sell)' : '관망 (Hold)'}
+                                </span>
+                            </div>
+                        </div>
 
-                    <h3 className="text-2xl font-extrabold text-white mb-2 leading-tight">
-                        {scenario.title}
-                    </h3>
-                    <p className="text-zinc-400 font-medium mb-8">
-                        {scenario.description}
-                    </p>
-
-                    <div className="grid grid-cols-2 gap-3">
                         <button 
-                            onClick={() => handlePredict('Positive')}
-                            className="h-16 rounded-2xl border-2 border-zinc-700 hover:border-app-positive/50 hover:bg-app-positive/10 active:scale-95 transition-all flex flex-col items-center justify-center space-y-1 group"
+                            onClick={() => setIsStrategySaved(false)}
+                            className="w-full py-3 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-sm hover:bg-zinc-700 transition-colors"
                         >
-                            <span className="text-2xl group-hover:scale-110 transition-transform">🚀</span>
-                            <span className="text-xs font-bold text-zinc-300 group-hover:text-white">잘 나올 것 같아요</span>
-                        </button>
-                        <button 
-                            onClick={() => handlePredict('Negative')}
-                            className="h-16 rounded-2xl border-2 border-zinc-700 hover:border-app-negative/50 hover:bg-app-negative/10 active:scale-95 transition-all flex flex-col items-center justify-center space-y-1 group"
-                        >
-                            <span className="text-2xl group-hover:scale-110 transition-transform">😰</span>
-                            <span className="text-xs font-bold text-zinc-300 group-hover:text-white">실망스러울 듯해요</span>
+                            전략 수정하기
                         </button>
                     </div>
                 </div>
-            )}
+            </div>
+          );
+      }
 
-            {/* --- STEP 2: CONTEXTUAL PROPOSAL --- */}
-            {step === 'analysis' && (
-                <div className="p-7 animate-in fade-in slide-in-from-bottom-8 duration-500">
-                     <div className="flex items-center space-x-2 mb-5">
-                        <div className="animate-pulse w-2 h-2 rounded-full bg-indigo-400"></div>
-                        <span className="text-xs font-bold text-indigo-300 uppercase tracking-widest">Hypo's Analysis</span>
+      // 1-A. Strategy Builder View
+      return (
+        <div className="mb-6 animate-in slide-in-from-top-4 duration-500">
+            <div className="bg-gradient-to-br from-[#1E1E1E] to-[#121212] rounded-[32px] border border-white/10 overflow-hidden relative">
+                {/* Header */}
+                <div className="p-6 pb-4 border-b border-white/5">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-2">
+                             <div className="w-2 h-2 rounded-full bg-app-accent animate-pulse" />
+                             <span className="text-xs font-bold text-app-accent uppercase tracking-wider">Scenario Planning</span>
+                        </div>
+                        <span className="text-xs font-bold text-zinc-500">{event.dDay} {event.type}</span>
                     </div>
+                    <h3 className="text-xl font-extrabold text-white leading-tight">
+                        {event.title}
+                    </h3>
+                    <p className="text-sm text-zinc-400 mt-1">
+                        {scenario.description}
+                    </p>
+                </div>
 
-                    <div className="bg-[#121212]/50 backdrop-blur-md rounded-2xl p-5 border-l-4 border-indigo-500 mb-6">
-                        <div className="flex items-start space-x-3">
-                            <AlertTriangle size={24} className="text-indigo-400 shrink-0 mt-0.5" />
-                            <div>
-                                <h4 className="text-lg font-bold text-white mb-1">
-                                    "잠시만요! {scenario.analysisContext?.message || "시장이 과열 상태입니다."}"
-                                </h4>
-                                <p className="text-sm text-zinc-300 leading-relaxed">
-                                    당신의 예측({selectedPrediction === 'Positive' ? '상승' : '하락'})과 달리, 시장 데이터는 변동성 확대를 예고하고 있습니다. 
-                                    <span className="text-indigo-300 font-bold ml-1">지금은 비중 조절이 유리합니다.</span>
-                                </p>
-                            </div>
+                {/* Body */}
+                <div className="p-6 pt-5">
+                    {/* Condition Toggle */}
+                    <div className="mb-6">
+                        <label className="text-xs font-bold text-zinc-500 mb-2 block">1. 상황 가정 (IF)</label>
+                        <div className="flex bg-black rounded-xl p-1 border border-white/5">
+                            <button 
+                                onClick={() => setCondition('Better')}
+                                className={`flex-1 py-3 rounded-lg text-sm font-bold transition-all ${condition === 'Better' ? 'bg-zinc-800 text-app-positive shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+                            >
+                                기대 이상일 때 🚀
+                            </button>
+                            <button 
+                                onClick={() => setCondition('Worse')}
+                                className={`flex-1 py-3 rounded-lg text-sm font-bold transition-all ${condition === 'Worse' ? 'bg-zinc-800 text-app-negative shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+                            >
+                                실망스러울 때 📉
+                            </button>
                         </div>
                     </div>
 
-                    <div className="space-y-3">
-                        <p className="text-center text-xs font-bold text-zinc-500 uppercase tracking-wider">Recommended Action</p>
-                        <div className="flex gap-3">
-                            {scenario.options.map((opt, idx) => (
-                                <button 
-                                    key={idx}
-                                    onClick={() => handleFinalAction(opt.label)}
-                                    className={`flex-1 py-4 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-all border 
-                                        ${opt.actionType === 'buy' ? 'bg-app-positive text-black border-app-positive' : 
-                                          opt.actionType === 'sell' ? 'bg-app-negative text-white border-app-negative' :
-                                          'bg-zinc-700 text-white border-zinc-600'
-                                        }`}
+                    {/* Action Selector */}
+                    <div className="mb-6">
+                        <label className="text-xs font-bold text-zinc-500 mb-2 block">2. 나의 행동 (THEN)</label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {[
+                                { id: 'buy', label: '매수', icon: '💰' },
+                                { id: 'hold', label: '관망', icon: '👀' },
+                                { id: 'sell', label: '매도', icon: '💸' }
+                            ].map((opt) => (
+                                <button
+                                    key={opt.id}
+                                    onClick={() => setSelectedAction(opt.id as any)}
+                                    className={`flex flex-col items-center justify-center py-3 rounded-xl border-2 transition-all active:scale-95 ${
+                                        selectedAction === opt.id 
+                                        ? 'border-app-accent bg-app-accent/10 text-white' 
+                                        : 'border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:border-zinc-600'
+                                    }`}
                                 >
-                                    {opt.label}
+                                    <span className="text-lg mb-1">{opt.icon}</span>
+                                    <span className="text-xs font-bold">{opt.label}</span>
                                 </button>
                             ))}
                         </div>
                     </div>
+
+                    <button 
+                        onClick={() => setIsStrategySaved(true)}
+                        disabled={!selectedAction}
+                        className="w-full py-4 bg-white text-black font-bold text-base rounded-2xl shadow-lg disabled:opacity-30 disabled:cursor-not-allowed hover:bg-zinc-200 transition-all active:scale-[0.98]"
+                    >
+                        전략 저장하기
+                    </button>
                 </div>
-            )}
+            </div>
+        </div>
+      );
+  }
+
+  // --- RENDER: POST-EVENT (Result Briefing) ---
+  return (
+    <div className="mb-6 animate-in slide-in-from-bottom-4 duration-700">
+        <div className="bg-[#1E1E1E] rounded-[32px] border border-white/10 overflow-hidden relative shadow-2xl">
+            {/* Header */}
+            <div className="bg-indigo-900/30 p-6 border-b border-indigo-500/20">
+                <div className="flex items-center space-x-2 mb-3">
+                    <span className="bg-white text-black text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Briefing</span>
+                    <span className="text-xs font-bold text-indigo-300">이벤트 종료 ({event.title})</span>
+                </div>
+                <h3 className="text-xl font-extrabold text-white leading-tight mb-2">
+                    {scenario.title}
+                </h3>
+                <p className="text-sm text-zinc-300 leading-relaxed opacity-90">
+                    {scenario.description}
+                </p>
+            </div>
+
+            {/* Analysis Body */}
+            <div className="p-6 space-y-5">
+                {/* Market Reaction */}
+                <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                        <Activity size={16} className="text-zinc-500" />
+                        <span className="text-xs font-bold text-zinc-500">시장 반응</span>
+                    </div>
+                    <div className="bg-black/30 p-4 rounded-2xl border border-white/5 text-sm text-zinc-200 leading-relaxed">
+                        {scenario.marketReaction}
+                    </div>
+                </div>
+
+                {/* Hypothesis Check */}
+                <div>
+                     <div className="flex items-center space-x-2 mb-2">
+                        <FileText size={16} className="text-app-accent" />
+                        <span className="text-xs font-bold text-app-accent">내 가설 점검</span>
+                    </div>
+                    <div className="bg-app-accent/10 p-4 rounded-2xl border border-app-accent/20 text-sm text-white leading-relaxed">
+                        {scenario.myHypothesisCheck}
+                    </div>
+                </div>
+
+                {/* Strategy Execution */}
+                <div className="pt-4 border-t border-white/5">
+                    {executionStatus === 'Pending' ? (
+                        <>
+                            <div className="flex justify-between items-center mb-4">
+                                <span className="text-xs text-zinc-500 font-bold">나의 기존 전략</span>
+                                <span className="text-sm font-bold text-white bg-zinc-700 px-3 py-1 rounded-lg">관망 (Hold)</span>
+                            </div>
+                            <div className="flex gap-3">
+                                <button 
+                                    onClick={() => setExecutionStatus('Executed')}
+                                    className="flex-1 py-4 bg-app-accent text-white font-bold rounded-2xl shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:bg-indigo-400 active:scale-95 transition-all"
+                                >
+                                    계획대로 실행
+                                </button>
+                                <button 
+                                    onClick={() => setExecutionStatus('Revised')}
+                                    className="flex-1 py-4 bg-zinc-800 text-zinc-400 font-bold rounded-2xl hover:bg-zinc-700 hover:text-white active:scale-95 transition-all"
+                                >
+                                    전략 수정
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-center py-4 bg-app-positive/10 rounded-2xl border border-app-positive/30 animate-in fade-in zoom-in">
+                            <CheckCircle2 size={32} className="text-app-positive mx-auto mb-2" />
+                            <h4 className="text-lg font-bold text-white">
+                                {executionStatus === 'Executed' ? '주문 실행 완료' : '전략 수정 페이지로 이동'}
+                            </h4>
+                            <p className="text-xs text-zinc-400">
+                                {executionStatus === 'Executed' ? '포트폴리오에 반영되었습니다.' : '잠시만 기다려주세요...'}
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     </div>
   );
@@ -244,17 +359,23 @@ const getXAxisLabels = (frame: TimeFrame) => {
 };
 
 const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isLearningMode = false, onReturnToQuiz, onAddLogic }) => {
+  const { data } = useStore();
   const [activeTimeFrame, setActiveTimeFrame] = useState<TimeFrame>('1M');
   const [isProfileExpanded, setIsProfileExpanded] = useState(false);
 
-  // Active Event Scenario?
-  const activeEvent = stock.events.find(e => e.actionScenario !== undefined);
-  const showActionCard = !isLearningMode && activeEvent?.actionScenario;
+  // Check ownership: This determines if we show the "Management" view or "Discovery" view
+  const isInvested = data.myThesis.some(t => t.ticker === stock.ticker);
+
+  // Active Events with scenarios
+  const actionableEvents = stock.events.filter(e => e.actionScenario !== undefined);
+  // Show Action Card only if Invested and not in learning mode
+  const showActionCards = isInvested && !isLearningMode && actionableEvents.length > 0;
 
   // Chart Data Processing
+  // If chartHistory is empty (e.g. dummy preview stock), handle gracefully
   const chartPoints = stock.chartHistory[activeTimeFrame] || [];
-  const chartNarrative = stock.chartNarratives[activeTimeFrame] || "데이터 부족";
-  const isPositive = (chartPoints[chartPoints.length - 1] - chartPoints[0]) >= 0;
+  const chartNarrative = stock.chartNarratives[activeTimeFrame] || "데이터 분석 중...";
+  const isPositive = chartPoints.length > 0 ? (chartPoints[chartPoints.length - 1] - chartPoints[0]) >= 0 : stock.changeRate >= 0;
   const trendColor = isPositive ? '#F87171' : '#60A5FA';
 
   // SVG Config
@@ -265,13 +386,13 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
   const graphHeight = svgHeight - padding.top - padding.bottom;
 
   // Calculate Scale
-  const minVal = Math.min(...chartPoints);
-  const maxVal = Math.max(...chartPoints);
+  const minVal = chartPoints.length ? Math.min(...chartPoints) : 0;
+  const maxVal = chartPoints.length ? Math.max(...chartPoints) : 100;
   const range = maxVal - minVal || 1;
   const buffer = range * 0.1; // 10% buffer
   const effectiveMin = minVal - buffer;
   const effectiveRange = range + (buffer * 2);
-  const avgVal = chartPoints.reduce((a, b) => a + b, 0) / chartPoints.length;
+  const avgVal = chartPoints.reduce((a, b) => a + b, 0) / (chartPoints.length || 1);
   const avgY = svgHeight - padding.bottom - ((avgVal - effectiveMin) / effectiveRange) * graphHeight;
 
   // X Axis Labels
@@ -333,9 +454,13 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
              </div>
           )}
 
-          {/* 1. HERO: EVENT ACTION CARD (Priority 1) */}
-          {showActionCard && activeEvent.actionScenario && (
-             <EventActionCard scenario={activeEvent.actionScenario} />
+          {/* 1. HERO: EVENT ACTION CARDS (Priority 1) - ONLY IF INVESTED */}
+          {showActionCards && (
+             <section className="mb-4">
+               {actionableEvents.map((evt, idx) => (
+                  <EventActionCard key={idx} event={evt} />
+               ))}
+             </section>
           )}
 
           {/* 2. CHART CONTEXT (Priority 2) */}
@@ -359,6 +484,7 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
               </div>
 
               <div className="w-full h-[160px] mb-4 bg-white/[0.02] rounded-2xl border border-white/5 relative">
+                  {chartPoints.length > 0 ? (
                   <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-full overflow-visible">
                         <defs>
                             <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
@@ -392,6 +518,11 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
                             <text x={svgWidth - padding.right} y={svgHeight} textAnchor="end">{xLabels[2]}</text>
                         </g>
                   </svg>
+                  ) : (
+                      <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                          차트 데이터 로딩 중
+                      </div>
+                  )}
               </div>
               <div className="flex items-start space-x-2 text-sm text-zinc-400 bg-white/5 p-3 rounded-xl">
                   <TrendingUp size={16} className="shrink-0 mt-0.5" />
@@ -399,8 +530,10 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
               </div>
           </section>
 
-          {/* 3. LOGIC HEALTH (Priority 3) */}
-          <section className="mb-10">
+          {/* 3. LOGIC HEALTH (Only if Invested) */}
+          {/* CRITICAL: ONLY SHOW IF INVESTED */}
+          {isInvested && (
+          <section className="mb-10 animate-in slide-in-from-bottom duration-500 delay-100">
              <div className="flex items-center justify-between mb-4">
                  <h3 className="text-lg font-bold text-white flex items-center">
                     <CheckCircle2 size={18} className="mr-2 text-app-accent" />
@@ -425,12 +558,13 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
                  </button>
              )}
           </section>
+          )}
 
           {/* 4. NEWS EVIDENCE (Priority 4) */}
           <section className="mb-10">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center">
                   <Calendar size={18} className="mr-2 text-zinc-500" />
-                  가설 체크 뉴스
+                  관련 뉴스
               </h3>
               <div>
                   {stock.newsTags.length > 0 ? (
@@ -439,7 +573,7 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
                       ))
                   ) : (
                       <div className="text-center py-8 text-zinc-500 bg-white/5 rounded-2xl border border-white/5">
-                          관련된 주요 뉴스가 없습니다.
+                          현재 분석된 주요 뉴스가 없습니다.
                       </div>
                   )}
               </div>
@@ -479,6 +613,20 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
                 <CheckCircle2 size={20} />
                 <span>분석 완료 (질문으로 돌아가기)</span>
               </button>
+           </div>
+        )}
+
+        {/* --- UNINVESTED VIEW CTA (Fixed Footer) --- */}
+        {/* CRITICAL: ONLY SHOW IF NOT INVESTED (DISCOVERY MODE) */}
+        {!isInvested && !isLearningMode && (
+           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#121212] via-[#121212] to-transparent z-20 pt-12">
+               <button 
+                 onClick={onAddLogic}
+                 className="w-full py-4 bg-app-accent hover:bg-indigo-400 text-white font-bold text-lg rounded-2xl shadow-[0_0_30px_rgba(99,102,241,0.3)] active:scale-[0.98] transition-all flex items-center justify-center animate-pulse-slow"
+               >
+                 <span>이 종목으로 투자 가설 세우기</span>
+                 <ArrowRight size={20} className="ml-2" />
+               </button>
            </div>
         )}
 

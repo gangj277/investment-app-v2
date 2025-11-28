@@ -1,17 +1,15 @@
-
-
 import React, { useState } from 'react';
 import { Search, ChevronRight, TrendingUp, History, X } from 'lucide-react';
-import { useStore } from '../contexts/StoreContext';
+import { useStore, ALL_STOCKS } from '../contexts/StoreContext';
 import LogicDetailModal from './LogicDetailModal';
 import { SearchResultSample } from '../types';
 
 interface DiscoveryTabProps {
-  onStartBuilder: (stock?: SearchResultSample) => void;
+  onStockClick: (stock: SearchResultSample) => void;
 }
 
-const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ onStartBuilder }) => {
-  const { data, searchStocks, selectDiscoveryStock } = useStore();
+const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ onStockClick }) => {
+  const { data, searchStocks } = useStore();
   const { trendingLogics, recentSearches, searchResults } = data.discovery;
   const [selectedLogic, setSelectedLogic] = useState<any | null>(null);
   const [query, setQuery] = useState("");
@@ -27,14 +25,22 @@ const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ onStartBuilder }) => {
       searchStocks("");
   };
 
-  const handleStockClick = (ticker: string) => {
-      // Find the full stock object to pass
-      const stock = searchResults.find(s => s.ticker === ticker) 
-                 || data.discovery.trendingLogics.flatMap(l => l.relatedStocksDetails).find(s => s.ticker === ticker) // Try to find in trending
-                 // Fallback to fetch from store context for full details in real app
-                 // For now, relies on selectDiscoveryStock updating the store state which builder reads
-      selectDiscoveryStock(ticker);
-      onStartBuilder(); 
+  const handleStockClickInternal = (ticker: string) => {
+      // FIX: Always prioritize finding the FULL stock data from the main database (ALL_STOCKS).
+      // The `trendingLogics` list only contains partial data (ticker, name, rate), 
+      // which causes the Detail Modal to crash or show empty data if used directly.
+      let stock = ALL_STOCKS.find(s => s.ticker === ticker);
+      
+      // Fallback: Check search results if not found in main DB (unlikely in this mock setup but good for safety)
+      if (!stock) {
+         stock = searchResults.find(s => s.ticker === ticker);
+      }
+
+      if (stock) {
+          onStockClick(stock);
+      } else {
+          console.warn("Full stock data not found for ticker:", ticker);
+      }
   };
 
   const getThemeColor = (theme: string) => {
@@ -94,7 +100,7 @@ const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ onStartBuilder }) => {
                         {searchResults.map((stock) => (
                             <div 
                                 key={stock.ticker}
-                                onClick={() => handleStockClick(stock.ticker)}
+                                onClick={() => handleStockClickInternal(stock.ticker)}
                                 className="flex items-center justify-between p-4 bg-[#1E1E1E] rounded-2xl border border-white/5 active:scale-[0.98] transition-all cursor-pointer hover:border-white/20"
                             >
                                 <div className="flex items-center space-x-4">
@@ -137,7 +143,7 @@ const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ onStartBuilder }) => {
                     {recentSearches.map((item) => (
                         <div 
                         key={item.id} 
-                        onClick={() => handleStockClick(item.ticker)}
+                        onClick={() => handleStockClickInternal(item.ticker)}
                         className="flex-shrink-0 bg-[#1E1E1E] p-4 rounded-2xl border border-white/5 flex items-center space-x-3 min-w-[200px] active:bg-white/5 transition-colors cursor-pointer"
                         >
                         <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0">
@@ -212,7 +218,7 @@ const DiscoveryTab: React.FC<DiscoveryTabProps> = ({ onStartBuilder }) => {
           logic={selectedLogic} 
           onClose={() => setSelectedLogic(null)} 
           onStockClick={(ticker) => {
-              handleStockClick(ticker);
+              handleStockClickInternal(ticker);
               setSelectedLogic(null);
           }}
         />

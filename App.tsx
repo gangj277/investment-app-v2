@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { CalendarClock, Lightbulb, Compass, Bell } from 'lucide-react';
 import { StoreProvider, useStore } from './contexts/StoreContext';
@@ -24,6 +22,9 @@ const AppContent: React.FC = () => {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
+  // Temporary State for Uninvested Stock View
+  const [uninvestedStockPreview, setUninvestedStockPreview] = useState<Thesis | null>(null);
+
   const unreadCount = data.notifications.filter(n => !n.isRead).length;
 
   const handleTabChange = (tab: Tab) => {
@@ -32,13 +33,55 @@ const AppContent: React.FC = () => {
 
   const handleOpenBuilder = (stock?: Thesis | SearchResultSample) => {
     if (stock) {
-        // If we are opening builder for a specific stock, ensure store context is set
-        // The builder consumes data.discovery.searchResultSample
         selectDiscoveryStock(stock.ticker);
     }
     // Close other modals if open
     setSelectedStock(null);
+    setUninvestedStockPreview(null);
     setIsBuilderOpen(true);
+  };
+
+  const handleStockClickFromDiscovery = (stock: SearchResultSample) => {
+    // Check if user already owns this stock
+    const existingThesis = data.myThesis.find(t => t.ticker === stock.ticker);
+    
+    if (existingThesis) {
+      // If owned, show the full detailed view
+      setSelectedStock(existingThesis);
+    } else {
+      // If not owned, create a temporary "Preview" Thesis object to display in modal
+      const previewThesis: Thesis = {
+        id: -1, // Temporary ID
+        ticker: stock.ticker,
+        name: stock.name,
+        currentPrice: stock.currentPrice,
+        changeRate: stock.changeRate,
+        status: 'Watching',
+        bigThesis: '',
+        companyProfile: stock.companyProfile,
+        logicBlocks: [], // No active logic yet
+        quizData: stock.quizData,
+        events: [],
+        newsTags: [],
+        dailyBriefing: '',
+        chartHistory: {
+          '1D': [stock.currentPrice],
+          '1W': [], '1M': [], '3M': [], '1Y': [], '5Y': []
+        }, // Minimal chart data for preview
+        chartNarratives: {
+          '1D': stock.chartContext,
+          '1W': '', '1M': '', '3M': '', '1Y': '', '5Y': ''
+        }
+      };
+      // We set specific chart context if available or generate dummy
+      // Since SearchResultSample lacks full chart history, StockDetailModal handles fallback/dummy generation if needed, 
+      // or we can pass a special flag. For now, passing the object allows the modal to render basic info.
+      
+      // Update store state for builder context
+      selectDiscoveryStock(stock.ticker);
+      
+      setUninvestedStockPreview(previewThesis);
+    }
   };
 
   const renderContent = () => {
@@ -48,7 +91,7 @@ const AppContent: React.FC = () => {
       case 'my-thesis':
         return <MyThesisTab onStockClick={setSelectedStock} onNavigate={handleTabChange} />;
       case 'discovery':
-        return <DiscoveryTab onStartBuilder={handleOpenBuilder} />;
+        return <DiscoveryTab onStockClick={handleStockClickFromDiscovery} />;
       default:
         return <MyThesisTab onStockClick={setSelectedStock} onNavigate={handleTabChange} />;
     }
@@ -60,7 +103,6 @@ const AppContent: React.FC = () => {
       const stock = data.myThesis.find(s => s.id === stockId);
       if (stock) {
         setSelectedStock(stock);
-        // If we are opening a specific stock, switching to my-thesis tab makes context clearer
         setActiveTab('my-thesis'); 
       }
     }
@@ -72,7 +114,7 @@ const AppContent: React.FC = () => {
       <main className="w-full max-w-[430px] h-full bg-app-bg relative shadow-2xl shadow-black border-x border-white/5 flex flex-col overflow-hidden">
         
         {/* Global Header Actions (Bell) */}
-        {isOnboardingComplete && !selectedStock && !isBuilderOpen && !isNotificationOpen && (
+        {isOnboardingComplete && !selectedStock && !uninvestedStockPreview && !isBuilderOpen && !isNotificationOpen && (
            <button 
              onClick={() => setIsNotificationOpen(true)}
              className="absolute top-6 right-6 z-50 p-2 bg-black/20 backdrop-blur-md rounded-full border border-white/5 hover:bg-white/10 transition-colors"
@@ -88,7 +130,10 @@ const AppContent: React.FC = () => {
 
         {/* Onboarding Overlay */}
         {!isOnboardingComplete && (
-          <OnboardingFlow onComplete={() => setIsOnboardingComplete(true)} />
+          <OnboardingFlow onComplete={() => {
+            setIsOnboardingComplete(true);
+            setActiveTab('my-thesis');
+          }} />
         )}
 
         {/* Dynamic Content Area */}
@@ -144,11 +189,14 @@ const AppContent: React.FC = () => {
         </nav>
 
         {/* Global Overlays */}
-        {selectedStock && (
+        {(selectedStock || uninvestedStockPreview) && (
           <StockDetailModal 
-            stock={selectedStock} 
-            onClose={() => setSelectedStock(null)} 
-            onAddLogic={() => handleOpenBuilder(selectedStock)}
+            stock={selectedStock || uninvestedStockPreview!} 
+            onClose={() => {
+              setSelectedStock(null);
+              setUninvestedStockPreview(null);
+            }} 
+            onAddLogic={() => handleOpenBuilder(selectedStock || uninvestedStockPreview!)}
           />
         )}
         

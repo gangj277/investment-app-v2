@@ -133,7 +133,7 @@ export interface QuizQuestion {
   id: number;
   category: QuizCategory;
   question: string;
-  backgroundContext?: string;
+  backgroundContext?: string; // Explains the "Why" before the question
   options: QuizOption[];
   learningContext?: {
     targetTab: 'profile' | 'chart' | 'news'; // Where to go to learn

@@ -57,12 +57,12 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
   // OCR Logic: Match user holdings with available database
   useEffect(() => {
     if (step === 'ocr' && scanComplete) {
-       // Instructions: pull directly from data.user.holdings.overseas
-       const targetHoldings = data.user.holdings.overseas;
+       // Combine domestic and overseas holdings
+       const allHoldings = [...data.user.holdings.domestic, ...data.user.holdings.overseas];
        
-       // Filter ALL_STOCKS to find matches to get the rich data objects
+       // Filter ALL_STOCKS to find matches
        const matches = ALL_STOCKS.filter(stock => 
-          targetHoldings.some(h => h.ticker === stock.ticker)
+          allHoldings.some(h => h.ticker === stock.ticker)
        );
        
        // If matches found, use them. Else use top 3 defaults.
@@ -72,7 +72,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
            setScannedStocks(ALL_STOCKS.slice(0, 3));
        }
     }
-  }, [step, scanComplete, data.user.holdings.overseas]);
+  }, [step, scanComplete, data.user.holdings]);
 
   const handleNameSubmit = () => {
     if (name.trim().length > 0) {
@@ -94,14 +94,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
     setSelectedStock(stock);
     setCurrentQuizIndex(0);
     setSelectedLogics([]);
-    
-    // Check if the stock has quiz data available
-    if (stock.quizData && stock.quizData.length > 0) {
-        setStep('quiz');
-    } else {
-        // Skip quiz if no data available (e.g. AMZN, NVDA in current mock data)
-        setStep('permission');
-    }
+    setStep('quiz');
   };
 
   // --- QUIZ HELPERS ---
@@ -326,7 +319,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
         <div className="w-full h-full flex flex-col px-6 pt-24 animate-in slide-in-from-right duration-300">
           <div className="flex-1">
             <h2 className="text-3xl font-bold leading-tight mb-8">
-              가설 수립을 시작해볼<br/>
+              가설 검증을 시작해볼<br/>
               <span className="text-app-accent">첫 번째 종목</span>을 골라보세요.
               <span className="block text-base font-medium text-zinc-400 mt-3">
                 하나씩 분석하다 보면 투자의 기준이 명확해질 거예요.
@@ -388,7 +381,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
             <div className="flex-1 px-6 overflow-y-auto pb-10">
                
                {/* NEW: Context Card */}
-               {currentQuestion?.backgroundContext && (
+               {currentQuestion.backgroundContext && (
                   <div className="mb-6 p-5 bg-[#1E1E1E] border border-white/10 rounded-2xl animate-in slide-in-from-bottom-2">
                      <div className="flex items-center space-x-2 mb-3 text-indigo-400">
                         <Info size={18} />
@@ -402,7 +395,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
 
                {/* Question Title */}
                <h2 className="text-2xl font-bold text-white mb-8 leading-snug whitespace-pre-line">
-                  {currentQuestion?.question}
+                  {currentQuestion.question}
                </h2>
 
                {/* Options List */}

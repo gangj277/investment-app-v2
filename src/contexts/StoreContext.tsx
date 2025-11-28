@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { AppData, StoreContextType, SearchResultSample, Thesis, LogicBlock, TimeFrame } from '../types';
 
@@ -176,38 +175,7 @@ export const ALL_STOCKS: SearchResultSample[] = [
       { id: 23, icon: 'AlertTriangle', title: "경쟁사 추격", desc: "삼성전자의 진입으로 점유율이 하락할 수 있습니다." },
       { id: 24, icon: 'Globe', title: "시장 파이 확대", desc: "경쟁사의 진입은 전체 HBM 시장이 커진다는 신호입니다." }
     ],
-    quizData: [
-        {
-          id: 1,
-          category: 'LongTerm',
-          question: "[AI 사이클] 반도체 슈퍼사이클은\n얼마나 갈까요?",
-          options: [
-             { text: "3년 이상 공급부족이 지속될 것이다.", type: 'bull', relatedLogicId: 20 },
-             { text: "곧 고점이 올 것이다.", type: 'bear', relatedLogicId: 21 },
-             { text: "잘 모르겠어요", type: 'idk' }
-          ]
-        },
-        {
-          id: 2,
-          category: 'LongTerm',
-          question: "[기술 격차] HBM 시장 1등\n수성 가능할까요?",
-          options: [
-             { text: "기술 격차를 유지할 것이다.", type: 'bull', relatedLogicId: 22 },
-             { text: "경쟁사에게 추격을 허용할 것이다.", type: 'bear', relatedLogicId: 23 },
-             { text: "잘 모르겠어요", type: 'idk' }
-          ]
-        },
-        {
-          id: 3,
-          category: 'ShortTerm',
-          question: "[경쟁사 이슈] 삼성전자의\n엔비디아 퀄 테스트 통과설",
-          options: [
-             { text: "공급 과잉 우려가 있다.", type: 'bear', relatedLogicId: 23 },
-             { text: "시장 파이 확대의 호재다.", type: 'bull', relatedLogicId: 24 },
-             { text: "잘 모르겠어요", type: 'idk' }
-          ]
-        }
-    ]
+    quizData: []
   },
   {
     ticker: "005930",
@@ -236,33 +204,8 @@ export const ALL_STOCKS: SearchResultSample[] = [
     changeRate: 1.5,
     companyProfile: { summary: "이커머스와 클라우드의 제왕", description: "세계 최대 온라인 쇼핑몰이자 AWS를 통한 클라우드 1위 기업입니다." },
     chartContext: "클라우드 성장세 재확인으로 주가가 견조합니다.",
-    availableLogicBlocks: [
-      { id: 30, icon: 'Cloud', title: "AWS의 AI 주도권", desc: "클라우드 1위 AWS가 생성형 AI 수요를 흡수하며 재성장할 것입니다." },
-      { id: 31, icon: 'TrendingUp', title: "물류 마진 개선", desc: "물류 효율화 프로젝트 완료로 소매 부문 이익률이 구조적으로 개선 중입니다." },
-      { id: 32, icon: 'AlertTriangle', title: "MS의 추격", desc: "MS Azure가 AI를 무기로 클라우드 점유율을 빠르게 뺏어오고 있습니다." }
-    ],
-    quizData: [
-        {
-          id: 1,
-          category: 'LongTerm',
-          question: "[클라우드] MS Azure의 맹추격,\nAWS는 안전할까요?",
-          options: [
-            { text: "1위 자리를 굳건히 지킬 것이다.", type: 'bull', relatedLogicId: 30 },
-            { text: "AI 경쟁력 부족으로 점유율을 뺏길 것이다.", type: 'bear', relatedLogicId: 32 },
-            { text: "잘 모르겠어요", type: 'idk' }
-          ]
-        },
-        {
-          id: 2,
-          category: 'ShortTerm',
-          question: "[수익성] 물류 인프라 투자가\n마무리 단계입니다.",
-          options: [
-             { text: "이제 이익을 회수할 시기다 (마진 개선).", type: 'bull', relatedLogicId: 31 },
-             { text: "경기 침체로 소비가 둔화될 것이다.", type: 'bear', relatedLogicId: 32 },
-             { text: "잘 모르겠어요", type: 'idk' }
-          ]
-        }
-    ]
+    availableLogicBlocks: [],
+    quizData: []
   },
   {
     ticker: "NVDA",
@@ -271,33 +214,8 @@ export const ALL_STOCKS: SearchResultSample[] = [
     changeRate: 2.5,
     companyProfile: { summary: "AI 시대의 총아, GPU 리더", description: "AI 데이터센터에 들어가는 GPU 시장을 사실상 독점하고 있습니다." },
     chartContext: "AI 수요 폭증으로 기록적인 상승세를 보이고 있습니다.",
-    availableLogicBlocks: [
-      { id: 40, icon: 'Cpu', title: "AI 칩 독점 지속", desc: "CUDA 생태계와 압도적 성능으로 시장 지배력이 3년 이상 지속될 것입니다." },
-      { id: 41, icon: 'TrendingDown', title: "수요 피크 아웃", desc: "빅테크들의 AI 투자가 줄어들면 칩 수요가 급감할 수 있습니다." },
-      { id: 42, icon: 'AlertTriangle', title: "경쟁 심화", desc: "AMD와 빅테크 자체 칩 개발로 점유율이 희석될 것입니다." }
-    ],
-    quizData: [
-        {
-          id: 1,
-          category: 'LongTerm',
-          question: "[독점력] 엔비디아의 독주 체제,\n언제까지 갈까요?",
-          options: [
-            { text: "CUDA 생태계 때문에 대체 불가능하다.", type: 'bull', relatedLogicId: 40 },
-            { text: "빅테크들이 자체 칩을 만들어 탈출할 것이다.", type: 'bear', relatedLogicId: 42 },
-            { text: "잘 모르겠어요", type: 'idk' }
-          ]
-        },
-        {
-          id: 2,
-          category: 'ShortTerm',
-          question: "[수요] 빅테크들의 AI 투자가\n지속될 수 있을까요?",
-          options: [
-             { text: "AI 경쟁은 이제 시작이다. 수요는 계속된다.", type: 'bull', relatedLogicId: 40 },
-             { text: "수익 모델 부재로 투자가 곧 줄어들 것이다.", type: 'bear', relatedLogicId: 41 },
-             { text: "잘 모르겠어요", type: 'idk' }
-          ]
-        }
-    ]
+    availableLogicBlocks: [],
+    quizData: []
   },
   {
     ticker: "AMD",
@@ -528,40 +446,22 @@ const initialData: AppData = {
         { id: 'l1', icon: "Cloud", title: "클라우드 성장", desc: "기업들의 AI 도입으로 클라우드 매출 매년 20% 성장", isActive: true },
         { id: 'l2', icon: "Cpu", title: "자체 칩(TPU) 효과", desc: "외부 칩 의존도를 낮춰 마진율 개선", isActive: true }
       ],
+      // [SCENARIO: PRE-EVENT]
       events: [
         { 
-            dDay: "D-7", 
-            title: "Gemini 2.0 Ultra 공개", 
-            type: "Product Launch", 
+            dDay: "D-1", 
+            title: "3분기 실적 발표", 
+            type: "Earnings", 
             impact: "High", 
             status: "Upcoming",
             actionScenario: {
                 phase: 'Pre-Event',
-                title: "GPT-5 대항마, 승기 잡을까?",
-                description: "다음 주 공개될 제미나이 2.0 울트라 모델이 GPT-4를 확실히 압도한다면 AI 리더십 논란을 잠재울 수 있습니다. 반면 성능이 실망스럽다면 '만년 2등' 이미지가 굳어질 위험이 있습니다.",
+                title: "내일 실적 발표, 어떻게 예상하세요?",
+                description: "월가는 매출 15% 성장을 기대하고 있습니다. 특히 클라우드 부문 마진율 개선이 핵심 관전 포인트입니다. 당신의 가설(클라우드 성장)과 일치하나요?",
                 options: [
-                    { label: "압도적 성능 (비중 확대)", actionType: 'buy', sentiment: 'Positive' },
-                    { label: "비등한 수준 (유지)", actionType: 'hold', sentiment: 'Neutral' },
-                    { label: "실망스러움 (비중 축소)", actionType: 'sell', sentiment: 'Negative' }
-                ]
-            }
-        },
-        { 
-            dDay: "Today", 
-            title: "3분기 실적 발표 (완료)", 
-            type: "Earnings", 
-            impact: "High", 
-            status: "Completed",
-            actionScenario: {
-                phase: 'Post-Event',
-                title: "매출 Beat, 마진 Miss",
-                description: "매출은 예상치를 상회했으나, AI 인프라 투자 비용 급증으로 영업이익률이 소폭 하락했습니다.",
-                marketReaction: "비용 통제 우려로 장후 -3% 하락 중입니다. 그러나 클라우드 성장률(+28%)은 고무적이라는 평가입니다.",
-                myHypothesisCheck: "회원님의 '클라우드 성장' 가설(L1)은 적중했으나, '마진 개선' 가설(L2)은 비용 증가로 인해 빗나갔습니다.",
-                options: [
-                    { label: "저점 매수 기회 (Buy)", actionType: 'buy', sentiment: 'Positive' },
-                    { label: "비용 추이 관망 (Hold)", actionType: 'hold', sentiment: 'Neutral' },
-                    { label: "수익성 훼손 우려 (Sell)", actionType: 'sell', sentiment: 'Negative' }
+                    { label: "기대 이상일 것 (비중 확대)", actionType: 'buy', sentiment: 'Positive' },
+                    { label: "예상 부합 (유지)", actionType: 'hold', sentiment: 'Neutral' },
+                    { label: "실망스러울 것 (비중 축소)", actionType: 'sell', sentiment: 'Negative' }
                 ]
             }
         }
@@ -569,7 +469,7 @@ const initialData: AppData = {
       newsTags: [
         { type: "Positive", text: "클라우드 부문 영업이익률 역대 최고치 경신 전망", date: "Just now", analystComment: "클라우드 마진 개선 가설에 힘을 실어주는 뉴스입니다." }
       ],
-      dailyBriefing: "실적 발표 후 변동성이 커지고 있습니다. 다음 주 Gemini 공개가 반등의 트리거가 될지 주목하세요.",
+      dailyBriefing: "실적 발표를 하루 앞두고 있습니다. 시장의 기대치가 높아진 상태라 작은 미스에도 변동성이 커질 수 있습니다.",
       quizData: [
         {
             id: 1,
@@ -595,82 +495,84 @@ const initialData: AppData = {
         '5Y': generateChart(100, 60, 'up'),
       },
       chartNarratives: {
-        '1D': '실적 발표 후 비용 우려로 조정 중입니다.',
-        '1W': 'Gemini 공개 기대감과 실적 경계감이 공존하고 있습니다.',
-        '1M': 'AI 모델 기대감으로 꾸준히 우상향 해왔습니다.',
-        '3M': '클라우드 마진 개선 기대감이 주가에 반영되었습니다.',
+        '1D': '실적 경계감으로 소폭 조정 중입니다.',
+        '1W': '단기 변동성이 확대되고 있으나 175달러 지지선을 지키고 있습니다.',
+        '1M': 'AI 모델 제미나이 발표 이후 우상향 추세가 뚜렷합니다.',
+        '3M': '클라우드 마진 개선 기대감이 주가에 반영되기 시작했습니다.',
         '1Y': 'AI 전환기의 과도기적 주가 흐름을 지나 성장 궤도에 진입했습니다.',
         '5Y': '검색 광고 독점력을 바탕으로 꾸준한 현금 흐름을 창출해왔습니다.'
       }
     },
     {
       id: 2,
-      ticker: "000660",
-      name: "SK하이닉스",
-      currentPrice: 185000,
-      changeRate: 3.5,
+      ticker: "TSLA",
+      name: "테슬라",
+      currentPrice: 240.5,
+      changeRate: 5.2,
       status: "Invested",
-      bigThesis: "AI 메모리 시장의 글로벌 리더",
+      bigThesis: "FSD 완성이 곧 모빌리티 패권이다",
       companyProfile: {
-          summary: "AI 메모리(HBM) 시장의 글로벌 1위",
-          description: "엔비디아 GPU에 필수적으로 들어가는 고성능 메모리(HBM)를 가장 잘 만드는 한국 기업입니다."
+          summary: "전기차를 넘어 AI 로보틱스 기업으로 진화 중",
+          description: "자율주행(FSD)과 로봇(Optimus)을 통해 미래 모빌리티와 노동 시장을 혁신하려는 기업입니다."
       },
       logicBlocks: [
-        { id: 20, icon: 'TrendingUp', title: "반도체 슈퍼사이클", desc: "AI 수요 폭증으로 3년 이상 공급 부족이 예상됩니다.", isActive: true },
-        { id: 22, icon: 'Server', title: "HBM 기술 격차", desc: "경쟁사 대비 압도적인 수율과 기술력을 유지 중입니다.", isActive: true }
+        { id: 'l1', icon: "Car", title: "FSD v12", desc: "End-to-End 신경망 적용으로 주행 성능 획기적 개선", isActive: true }
       ],
+      // [SCENARIO: POST-EVENT]
       events: [
         { 
             dDay: "Today", 
-            title: "경쟁사 엔비디아 퀄 테스트 (완료)", 
-            type: "Rumor", 
+            title: "실적 발표 직후", 
+            type: "Earnings", 
             impact: "High", 
             status: "Completed",
             actionScenario: {
                 phase: 'Post-Event',
-                title: "삼성, 퀄 테스트 탈락 루머",
-                description: "경쟁사(삼성)가 엔비디아 품질 테스트에서 발열 문제로 통과하지 못했다는 외신 보도가 있었습니다.",
-                marketReaction: "반사 이익 기대감으로 하이닉스 +4% 급등",
-                myHypothesisCheck: "회원님의 '기술 격차 유지 가설(L22)'이 시장에서 강력하게 지지받고 있음을 확인했습니다.",
+                title: "어닝 쇼크? 규제 완화!",
+                description: "EPS는 예상치를 하회했으나, 컨퍼런스 콜에서 언급된 '규제 완화' 소식에 주가가 급등했습니다. 펀더멘털보다는 기대감이 지배하는 상황입니다.",
+                marketReaction: "이익 감소 악재보다 미래 비전(규제 완화) 호재에 반응하여 급등 중",
+                myHypothesisCheck: "회원님의 'FSD 가치' 가설이 시장에서 재조명받고 있습니다. 다만 실적 숫자는 아직 뒷받침되지 않았습니다.",
                 options: [
-                    { label: "계속 보유 (Hold)", actionType: 'hold', sentiment: 'Positive' },
-                    { label: "차익 실현 (Sell)", actionType: 'sell', sentiment: 'Neutral' },
-                    { label: "비중 확대 (Buy)", actionType: 'buy', sentiment: 'Positive' }
-                ]
-            }
-        },
-        { 
-            dDay: "D-14", 
-            title: "HBM4 독점 공급 계약 공시", 
-            type: "Contract", 
-            impact: "Medium", 
-            status: "Upcoming",
-            actionScenario: {
-                phase: 'Pre-Event',
-                title: "HBM4, 이번에도 독점할까?",
-                description: "차세대 HBM4에서도 엔비디아향 독점 공급을 유지한다면 기술적 해자는 2년 더 연장됩니다. 만약 듀얼 벤더 체제로 간다면 밸류에이션 조정이 불가피합니다.",
-                options: [
-                    { label: "독점 유지 (비중 확대)", actionType: 'buy', sentiment: 'Positive' },
-                    { label: "듀얼 벤더 진입 (비중 축소)", actionType: 'sell', sentiment: 'Negative' }
+                    { label: "상승 즐기기 (Hold)", actionType: 'hold', sentiment: 'Positive' },
+                    { label: "일부 수익 실현", actionType: 'sell', sentiment: 'Neutral' },
+                    { label: "가설 재점검 필요", actionType: 'revise', sentiment: 'Negative' }
                 ]
             }
         }
       ],
       newsTags: [],
-      dailyBriefing: "HBM 리더십이 견고하게 유지되고 있습니다.",
-      quizData: [],
+      dailyBriefing: "규제 완화 소식에 강한 매수세가 유입되고 있습니다. 가설이 적중하고 있는 모습입니다.",
+      quizData: [
+        {
+          id: 1,
+          category: 'LongTerm',
+          question: "전기차 시장에서\n테슬라의 가격 경쟁력은?",
+          options: [
+            { text: "치킨게임 승자로 시장을 독식할 것이다.", type: 'bull', relatedLogicId: 'l1' },
+            { text: "중국 저가 전기차 공세에 밀릴 것이다.", type: 'bear', relatedLogicId: 'l1' },
+            { text: "잘 모르겠어요", type: 'idk' }
+          ],
+          learningContext: {
+            targetTab: 'chart',
+            hint: "최근 마진율 추이와 중국 시장 점유율 변화를 차트에서 확인해보세요."
+          }
+        }
+      ],
       chartHistory: {
-        '1D': generateChart(185000, 24, 'up'),
-        '1W': generateChart(182000, 20, 'up'),
-        '1M': generateChart(170000, 30, 'up'),
-        '3M': generateChart(160000, 45, 'up'),
-        '1Y': generateChart(130000, 60, 'up'),
-        '5Y': generateChart(100000, 60, 'up'),
+        '1D': generateChart(230, 24, 'up'),
+        '1W': generateChart(215, 20, 'up'),
+        '1M': generateChart(190, 30, 'up'),
+        '3M': generateChart(180, 45, 'volatile'),
+        '1Y': generateChart(250, 60, 'down'),
+        '5Y': generateChart(50, 60, 'up'),
       },
       chartNarratives: {
-        '1D': '외국인 매수세로 상승 마감했습니다.',
-        '1W': 'HBM 수요 지속 전망으로 견조한 흐름입니다.',
-        '1M': '', '3M': '', '1Y': '', '5Y': ''
+        '1D': '규제 완화 속보로 급등세가 연출되고 있습니다.',
+        '1W': '인도량 호조 기대감이 선반영되며 상승세를 탔습니다.',
+        '1M': '저가 매수세 유입으로 바닥을 다지고 반등했습니다.',
+        '3M': '전기차 수요 둔화 우려와 신모델 기대감이 공존하고 있습니다.',
+        '1Y': '영업이익률 하락 우려로 인해 박스권에 갇혀 있었습니다.',
+        '5Y': '전기차 대중화를 이끌며 자동차 산업의 패러다임을 바꿨습니다.'
       }
     }
   ],
