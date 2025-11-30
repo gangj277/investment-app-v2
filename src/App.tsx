@@ -9,7 +9,7 @@ import StockDetailModal from './components/StockDetailModal';
 import OnboardingFlow from './components/onboarding/OnboardingFlow';
 import NotificationModal from './components/NotificationModal';
 import NarrativeIntro from './components/narrative/NarrativeIntro';
-import WatchpointBuilder from './components/narrative/WatchpointBuilder';
+import WatchpointBuilder from './components/narrative/WatchpointBuilder'; // Correct import
 import { TEXT } from './constants/text';
 
 type Tab = 'insight' | 'my-thesis' | 'discovery';

@@ -1,10 +1,9 @@
-
 import { Thesis, LogicHealth } from '../types';
 
 // --- CONSTANTS ---
 const BASE_SCORE = 50;
 const SCORE_PASS = 10;   // Hypothesis confirmed
-const SCORE_FAIL = -15;  // Hypothesis broken (Penalty is higher to emphasize risk)
+const SCORE_FAIL = -15;  // Hypothesis broken (Penalty is higher)
 const ACTION_BUY = 5;    // User showed confidence
 const ACTION_SELL = -5;  // User reduced position
 
@@ -15,14 +14,7 @@ export interface LogicHealthResult {
 }
 
 /**
- * Calculates the Logic Health Score based on the history of events and user actions.
- * 
- * Algorithm:
- * 1. Start with BASE_SCORE (50).
- * 2. Iterate through all events associated with the thesis.
- * 3. Add/Subtract points based on Checkpoint results (Pass/Fail).
- * 4. Add/Subtract points based on User Action History (Buy/Sell).
- * 5. Clamp the result between 0 and 100.
+ * Calculates the Logic Health Score based on events and user actions.
  */
 export const calculateLogicHealth = (thesis: Thesis): LogicHealthResult => {
   let currentScore = BASE_SCORE;
@@ -48,7 +40,6 @@ export const calculateLogicHealth = (thesis: Thesis): LogicHealthResult => {
         } else if (decision === 'sell') {
           currentScore += ACTION_SELL;
         }
-        // 'hold' has no impact on score currently
       }
     });
   }
@@ -70,14 +61,11 @@ export const calculateLogicHealth = (thesis: Thesis): LogicHealthResult => {
 };
 
 /**
- * Updates the thesis logicHealth property based on the calculation.
- * Returns a new Thesis object with updated health.
+ * Updates the thesis logicHealth properly.
  */
 export const updateThesisHealth = (thesis: Thesis): Thesis => {
   const result = calculateLogicHealth(thesis);
   
-  // Create a new history entry if score changed (Optional logic for future)
-  // For now, simply update the current score and status
   const updatedHealth: LogicHealth = {
     ...thesis.logicHealth,
     score: result.score,

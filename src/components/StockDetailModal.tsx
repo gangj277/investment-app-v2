@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, TrendingUp, Activity, Calendar, Quote, ChevronDown, ChevronUp, AlertCircle, Eye, ArrowRight, CheckCircle2, Play, AlertTriangle } from 'lucide-react';
+import { X, TrendingUp, Activity, Calendar, Quote, ChevronDown, ChevronUp, AlertCircle, Eye, ArrowRight, CheckCircle2, AlertTriangle, ChevronRight as ChevronRightIcon } from 'lucide-react';
 import { Thesis, TimeFrame, Event } from '../types';
 import { useStore } from '../contexts/StoreContext';
 import { NewsCard } from './stock-detail/NewsSection';
@@ -17,18 +17,6 @@ interface StockDetailModalProps {
   onReturnToQuiz?: () => void;
   onAddLogic?: () => void;
 }
-
-const getXAxisLabels = (frame: TimeFrame) => {
-    switch (frame) {
-        case '1D': return ['09:00', '12:00', '15:30'];
-        case '1W': return ['Mon', 'Wed', 'Fri'];
-        case '1M': return ['4주 전', '2주 전', '오늘'];
-        case '3M': return ['3달 전', '1달 전', '오늘'];
-        case '1Y': return ['Jan', 'Jun', 'Dec'];
-        case '5Y': return ['2020', '2022', '2024'];
-        default: return [];
-    }
-};
 
 const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isLearningMode = false, onReturnToQuiz, onAddLogic }) => {
   const { data } = useStore();
@@ -75,8 +63,6 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
   };
 
   const handleWatchpointComplete = (selections: any[]) => {
-      // In a real app, this would dispatch an update to the store.
-      // For UI demo, we just close the builder.
       setShowWatchpointBuilder(false);
   };
 
@@ -275,16 +261,6 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
                                 </div>
                             )}
                         </div>
-
-                        {/* Additional trigger if populated but user wants to edit/add */}
-                        {stock.watchpoints.length > 0 && !isLearningMode && (
-                             <button 
-                                onClick={() => setShowWatchpointBuilder(true)}
-                                className="w-full mt-4 py-3 border border-dashed border-zinc-700 rounded-xl text-zinc-500 font-bold text-xs hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1"
-                            >
-                                + 가설 수정/보완하기
-                            </button>
-                        )}
                     </div>
                  </div>
              </div>
@@ -368,7 +344,7 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
 
       </div>
       
-      {/* --- OVERLAYS (Rendered on top) --- */}
+      {/* --- OVERLAYS --- */}
       {showEventMode && activeEvent && (
         <ImmersiveEventMode 
             event={activeEvent} 

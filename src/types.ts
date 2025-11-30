@@ -1,5 +1,3 @@
-
-
 export interface User {
   name: string;
   profileMsg: string;
@@ -45,19 +43,19 @@ export interface SummaryHighlight {
   isBold: boolean;
 }
 
-// --- LOGIC & NARRATIVE (New) ---
+// --- LOGIC & NARRATIVE (New Core) ---
 
 export interface NarrativeProfile {
-  summary: string;
+  summary: string; // One-line summary for cards
   whyNow: string;
   floor: string;
   upside: string;
-  debate: string[];
-  theBet: string;
+  debate: string[]; // Bull/Bear points
+  theBet: string; // The core question to the user
 }
 
 export interface WatchpointOption {
-  label: string;
+  label: string; // e.g., "Bull: 이익 방어 가능"
   side: 'Bull' | 'Bear';
   implications?: string;
 }
@@ -65,27 +63,32 @@ export interface WatchpointOption {
 export interface Watchpoint {
   id: number;
   question: string;
-  context: string;
+  context: string; // Background info (Why it matters)
   options: WatchpointOption[];
 }
 
 export interface LogicHealth {
-  score: number;
+  score: number; // 0-100
   status: 'Good' | 'Warning' | 'Danger';
-  history: any[];
+  history: {
+    date: string;
+    scoreChange: number;
+    reason: string;
+  }[];
 }
 
-// Legacy LogicBlock for compatibility
+// Deprecated LogicBlock kept ONLY for UI compatibility during migration phase.
+// Will be removed in future steps.
 export interface LogicBlock {
   id: string | number;
   icon?: string;
   title: string;
   desc: string;
   isActive?: boolean;
-  history?: any[];
+  history?: { date: string; type: string; text: string; category?: string; badgeText?: string; }[];
 }
 
-// --- UNIFIED EVENT SYSTEM ---
+// --- UNIFIED EVENT SYSTEM (New) ---
 
 export interface EventCheckpoint {
   watchpointId: number;
@@ -94,40 +97,45 @@ export interface EventCheckpoint {
 }
 
 export interface EventScenario {
-  label: string;
+  label: string; // e.g., "Aggressive Buy"
   action: 'buy' | 'hold' | 'sell';
 }
 
 export interface EventActionHistory {
   decision: 'buy' | 'hold' | 'sell';
   date: string;
+  pnl?: string;
 }
 
 export interface Event {
   id: string;
   title: string;
+  date: string; 
+  type: string; // Earnings, Product Launch, etc.
   status: 'Upcoming' | 'Active' | 'Completed';
-  type: string;
-  date: string; // Replaces dDay
   
-  // Legacy fields compatibility
-  dDay?: string;
-  impact?: 'High' | 'Medium' | 'Low';
-  actionScenario?: any;
-
-  // New fields
-  checkpoints?: EventCheckpoint[];
-  marketReaction?: {
+  // Linkage to Watchpoints
+  checkpoints: EventCheckpoint[];
+  
+  // Analysis & Reaction
+  marketReaction: {
     priceChange: string;
     volumeChange: string;
     comment: string;
   };
-  analysis?: {
+  analysis: {
     cause: string;
     context: string;
   };
-  scenarios?: EventScenario[];
+  
+  // Actionable Scenarios
+  scenarios: EventScenario[];
+  
+  // User History
   myActionHistory?: EventActionHistory;
+  
+  // Optional for UI urgency
+  impact?: 'High' | 'Medium' | 'Low';
 }
 
 // --- NEWS SYSTEM ---
@@ -136,28 +144,6 @@ export interface NewsItem {
   text: string;
   date: string;
   analystComment?: string;
-  relatedLogicId?: string | number;
-}
-
-// --- QUIZ & LEARNING SYSTEM (Legacy support) ---
-export type QuizCategory = 'LongTerm' | 'ShortTerm';
-
-export interface QuizOption {
-  text: string;
-  type: 'bull' | 'bear' | 'idk';
-  relatedLogicId?: string | number;
-}
-
-export interface QuizQuestion {
-  id: number;
-  category: QuizCategory;
-  question: string;
-  backgroundContext?: string;
-  options: QuizOption[];
-  learningContext?: {
-    targetTab: 'profile' | 'chart' | 'news';
-    hint: string;
-  };
 }
 
 // --- COMPANY INFO ---
@@ -173,28 +159,34 @@ export interface Thesis {
   id: number;
   ticker: string;
   name: string;
+  
+  // Asset Data
   currentPrice: number;
   changeRate: number;
   status: 'Invested' | 'Watching';
   
-  // New Core
-  narrative?: NarrativeProfile;
-  watchpoints: Watchpoint[];
+  // Narrative Core (New)
+  narrative: NarrativeProfile;
+  watchpoints: Watchpoint[]; 
   logicHealth: LogicHealth;
   
-  // Legacy/Shared
-  bigThesis?: string;
-  companyProfile: CompanyProfile;
-  logicBlocks: LogicBlock[];
-  quizData?: QuizQuestion[];
+  // Event Loop
   events: Event[];
+  
+  // Legacy Logic Blocks (Backward Compat)
+  logicBlocks: LogicBlock[]; 
+  
+  // Context
+  companyProfile: CompanyProfile;
   newsTags: NewsItem[];
   dailyBriefing: string;
   
+  // Charts
   chartHistory: Record<TimeFrame, number[]>;
   chartNarratives: Record<TimeFrame, string>;
 }
 
+// --- SEARCH & DISCOVERY ---
 export interface RelatedStock {
   ticker: string;
   name: string;
@@ -212,7 +204,6 @@ export interface TrendingLogic {
   theme: string;
 }
 
-// --- SEARCH & DISCOVERY ---
 export interface SearchResultSample {
   ticker: string;
   name: string;
@@ -223,11 +214,13 @@ export interface SearchResultSample {
   chartContext: string;
   
   // Core Data
-  narrative?: NarrativeProfile;
-  watchpoints?: Watchpoint[];
-  availableLogicBlocks: LogicBlock[];
-  events?: Event[];
-  quizData?: QuizQuestion[];
+  narrative: NarrativeProfile;
+  watchpoints: Watchpoint[];
+  
+  // Pre-populated events for preview
+  events?: Event[]; 
+  
+  availableLogicBlocks: LogicBlock[]; // Legacy
 }
 
 export interface RecentSearch {
@@ -271,6 +264,7 @@ export interface StoreContextType {
   markNotificationAsRead: (id: number) => void;
   searchStocks: (query: string) => void;
   selectDiscoveryStock: (ticker: string) => void;
-  addToMyThesis: (stock: SearchResultSample, selectedLogicIds: number[], investmentType: string, amount?: string) => Thesis;
+  // Updated Signature for new flow
+  addToMyThesis: (stock: SearchResultSample, selectedWatchpointIndices: number[], investmentType: string, amount?: string) => Thesis;
   recordEventDecision: (thesisId: number, eventId: string, decision: 'buy' | 'hold' | 'sell') => void;
 }

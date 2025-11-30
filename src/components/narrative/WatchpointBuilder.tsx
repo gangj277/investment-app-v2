@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, Info, ArrowRight, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
-import { SearchResultSample, Thesis, Watchpoint } from '../../types';
+import { X, Info, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { SearchResultSample, Thesis } from '../../types';
 
 interface WatchpointBuilderProps {
   stock: SearchResultSample | Thesis;
@@ -17,7 +17,7 @@ const WatchpointBuilder: React.FC<WatchpointBuilderProps> = ({ stock, onComplete
   const [selections, setSelections] = useState<Record<number, 'Bull' | 'Bear'>>({});
   
   const currentItem = watchpoints[currentIndex];
-  const progress = ((currentIndex + 1) / watchpoints.length) * 100;
+  const progress = watchpoints.length > 0 ? ((currentIndex + 1) / watchpoints.length) * 100 : 0;
 
   const handleSelect = (watchpointId: number, side: 'Bull' | 'Bear') => {
     setSelections(prev => ({
@@ -39,9 +39,9 @@ const WatchpointBuilder: React.FC<WatchpointBuilderProps> = ({ stock, onComplete
     }
   };
 
-  const isCurrentSelected = !!selections[currentItem.id];
+  const isCurrentSelected = currentItem ? !!selections[currentItem.id] : false;
 
-  // If no watchpoints, skip directly
+  // Auto-complete if no watchpoints available
   useEffect(() => {
       if (watchpoints.length === 0) {
           onComplete([]);
@@ -51,7 +51,7 @@ const WatchpointBuilder: React.FC<WatchpointBuilderProps> = ({ stock, onComplete
   if (watchpoints.length === 0) return null;
 
   return (
-    <div className="flex flex-col h-full bg-[#121212] relative">
+    <div className="flex flex-col h-full bg-[#121212] relative font-sans">
       
       {/* Intro Overlay */}
       {showIntro && (
@@ -97,7 +97,7 @@ const WatchpointBuilder: React.FC<WatchpointBuilderProps> = ({ stock, onComplete
       {/* Main Content (Slider Area) */}
       <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col">
          
-         {/* Context Box (CRITICAL) */}
+         {/* Context Box */}
          <div className="mb-8 p-5 rounded-2xl bg-zinc-900 border-l-4 border-app-accent animate-in slide-in-from-bottom-2">
             <div className="flex items-center gap-2 mb-2">
                <AlertCircle size={16} className="text-app-accent" />

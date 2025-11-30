@@ -1,8 +1,7 @@
 
-
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle2, AlertCircle, HelpCircle, ArrowRight, BarChart3, Bot, TrafficCone, Check, Sparkles, TrendingUp, AlertTriangle, Play } from 'lucide-react';
-import { Event, Thesis, EventScenario } from '../../types';
+import { X, CheckCircle2, AlertCircle, HelpCircle, ArrowRight, BarChart3, Bot, TrafficCone, Check, Sparkles, AlertTriangle } from 'lucide-react';
+import { Event, Thesis } from '../../types';
 import { useStore } from '../../contexts/StoreContext';
 
 interface ImmersiveEventModeProps {
@@ -14,7 +13,7 @@ interface ImmersiveEventModeProps {
 
 const TOTAL_STEPS = 5;
 
-// Helper to generate scenario descriptions if missing from data
+// Helper to generate scenario descriptions
 const getScenarioDescription = (action: 'buy' | 'hold' | 'sell', label: string) => {
   if (label.includes("매수") || action === 'buy') return "가설이 강화되었습니다. 비중을 늘려 이익을 극대화할 기회입니다.";
   if (label.includes("매도") || action === 'sell') return "리스크 관리가 필요합니다. 비중을 축소하여 손실을 방어하세요.";
@@ -59,7 +58,6 @@ const ImmersiveEventMode: React.FC<ImmersiveEventModeProps> = ({ event, stock, o
   }, [currentStep, event.analysis]);
 
   // --- Render Helpers ---
-
   const renderProgressIndicator = () => (
     <div className="absolute top-0 left-0 right-0 flex space-x-1 p-2 z-20">
       {Array.from({ length: TOTAL_STEPS }).map((_, idx) => (
@@ -225,7 +223,6 @@ const ImmersiveEventMode: React.FC<ImmersiveEventModeProps> = ({ event, stock, o
                이유는 무엇일까요?
              </h1>
 
-             {/* Chat Bubble / Analysis Card */}
              <div className="relative">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl opacity-20 blur-lg" />
                 <div className="relative bg-[#1E1E1E]/80 backdrop-blur-xl p-8 rounded-3xl border border-white/10 min-h-[200px]">
@@ -253,10 +250,11 @@ const ImmersiveEventMode: React.FC<ImmersiveEventModeProps> = ({ event, stock, o
   // --- STEP 4: THE CONTEXT ---
   const renderStep4_TheContext = () => {
     // Logic: If Pass count > Fail count -> Green, else Red
+    // Note: Pending checkpoints don't count towards Pass/Fail ratio here
     const passCount = event.checkpoints.filter(cp => cp.status === 'Pass').length;
     const failCount = event.checkpoints.filter(cp => cp.status === 'Fail').length;
     
-    // Simple heuristic
+    // Default to Intact if no Failures (even if all Pending)
     const isThesisIntact = passCount >= failCount;
 
     return (

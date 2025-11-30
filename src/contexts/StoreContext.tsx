@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { AppData, StoreContextType, SearchResultSample, Thesis } from '../types';
 import { ALL_STOCKS, getInitialData } from '../data/stockData';
 import { generateChartData } from '../utils/chartUtils';
@@ -8,18 +8,20 @@ export { ALL_STOCKS };
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
+// --- SYNC LOGIC (Deduplication) ---
 const syncHoldingsToThesis = (currentData: AppData): Thesis[] => {
   const { user, myThesis } = currentData;
   const allHoldings = [...user.holdings.domestic, ...user.holdings.overseas];
   
-  // Start with existing thesis list to preserve any user edits
+  // Start with existing thesis list to preserve user edits
   let updatedThesisList = [...myThesis];
 
   allHoldings.forEach(holding => {
-    // Deduplication check
+    // Check if ticker already exists
     const existingIndex = updatedThesisList.findIndex(t => t.ticker === holding.ticker);
 
     if (existingIndex >= 0) {
+      // If exists, ensure status is 'Invested'
       if (updatedThesisList[existingIndex].status !== 'Invested') {
         updatedThesisList[existingIndex] = {
           ...updatedThesisList[existingIndex],
@@ -27,7 +29,7 @@ const syncHoldingsToThesis = (currentData: AppData): Thesis[] => {
         };
       }
     } else {
-      // Create NEW
+      // If NEW, create from ALL_STOCKS rich data
       const richData = ALL_STOCKS.find(s => s.ticker === holding.ticker);
       
       const calculatedPrice = holding.quantity > 0 ? holding.valuation / holding.quantity : 0;
@@ -43,15 +45,21 @@ const syncHoldingsToThesis = (currentData: AppData): Thesis[] => {
         changeRate: changeRate,
         status: 'Invested',
         
-        narrative: richData?.narrative,
+        // Critical: Use rich data if available
+        narrative: richData?.narrative || {
+            summary: "포트폴리오 자산",
+            whyNow: "-", floor: "-", upside: "-", debate: [], theBet: "-"
+        },
         watchpoints: richData?.watchpoints || [],
-        events: richData?.events || [], // IMPORTANT: Copy events from rich data
-        companyProfile: richData?.companyProfile || { summary: "-", description: "-" },
+        events: richData?.events || [], // Copy events!
         
         logicHealth: { score: 50, status: 'Warning', history: [] },
-        logicBlocks: [],
+        logicBlocks: [], // Legacy empty
+        
+        companyProfile: richData?.companyProfile || { summary: "-", description: "-" },
         newsTags: [],
-        dailyBriefing: "가설 점검이 필요합니다.",
+        dailyBriefing: "포트폴리오 연동 완료. 가설을 점검하세요.",
+        
         chartHistory: {
             '1D': generateChartData(finalPrice, 24, trend),
             '1W': generateChartData(finalPrice, 20, 'volatile'),
@@ -105,10 +113,11 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
   };
 
-  const addToMyThesis = (stock: SearchResultSample, selectedLogicIds: number[], investmentType: string, amount?: string): Thesis => {
-    // 1. Deduplication
+  const addToMyThesis = (stock: SearchResultSample, selectedWatchpointIndices: number[], investmentType: string, amount?: string): Thesis => {
+    // 1. Deduplication Check
     const existingThesis = data.myThesis.find(t => t.ticker === stock.ticker);
     if (existingThesis) {
+        // If simply watching -> invested upgrade
         if (existingThesis.status !== 'Invested' && investmentType === 'Invested') {
            const updated = { ...existingThesis, status: 'Invested' as const };
            setData(prev => ({ ...prev, myThesis: prev.myThesis.map(t => t.id === existingThesis.id ? updated : t) }));
@@ -117,7 +126,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         return existingThesis;
     }
 
-    // 2. Create New
+    // 2. Create New Thesis
     const trend = stock.changeRate > 0 ? 'up' : 'down';
     const newThesis: Thesis = {
         id: Date.now(), 
@@ -126,12 +135,16 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         currentPrice: stock.currentPrice,
         changeRate: stock.changeRate,
         status: investmentType as 'Invested' | 'Watching',
+        
+        // Copy Core Data
         narrative: stock.narrative,
         watchpoints: stock.watchpoints || [],
-        events: stock.events || [], // Copy events!
+        events: stock.events || [], 
         companyProfile: stock.companyProfile,
-        logicBlocks: [],
+        
         logicHealth: { score: 50, status: 'Warning', history: [] },
+        logicBlocks: [],
+        
         newsTags: [],
         dailyBriefing: "신규 가설 등록 완료.",
         chartHistory: {
@@ -152,8 +165,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             {
                 id: Date.now(),
                 type: 'info',
-                title: `${stock.name} 등록 완료`,
-                desc: '가설이 저장되었습니다.',
+                title: `${stock.name} 가설 등록 완료`,
+                desc: '성공적으로 저장되었습니다.',
                 timestamp: '방금 전',
                 isRead: false,
                 stockId: newThesis.id,
@@ -169,11 +182,13 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setData(prev => {
           const thesisIndex = prev.myThesis.findIndex(t => t.id === thesisId);
           if (thesisIndex === -1) return prev;
+
           const updatedThesis = { ...prev.myThesis[thesisIndex] };
           const eventIndex = updatedThesis.events.findIndex(e => e.id === eventId);
           
           if (eventIndex !== -1) {
               const updatedEvents = [...updatedThesis.events];
+              // Update Event Status & History
               updatedEvents[eventIndex] = {
                   ...updatedEvents[eventIndex],
                   status: 'Completed', 
@@ -181,10 +196,14 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               };
               updatedThesis.events = updatedEvents;
           }
+
+          // Recalculate Score
           const healthResult = updateThesisHealth(updatedThesis);
           updatedThesis.logicHealth = healthResult.logicHealth;
+
           const newMyThesis = [...prev.myThesis];
           newMyThesis[thesisIndex] = updatedThesis;
+
           return { ...prev, myThesis: newMyThesis };
       });
   };
