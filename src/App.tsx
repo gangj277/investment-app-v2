@@ -61,7 +61,7 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-[#000] flex justify-center items-center overflow-hidden font-sans">
+    <div className="h-screen w-full bg-[#000] flex justify-center items-center overflow-hidden font-sans text-white">
       <main className="w-full max-w-[430px] h-full bg-app-bg relative shadow-2xl flex flex-col overflow-hidden">
         
         {isOnboardingComplete && !selectedStock && !narrativeTarget && !isBuilderOpen && !isNotificationOpen && (
@@ -72,29 +72,36 @@ const AppContent: React.FC = () => {
 
         {!isOnboardingComplete && <OnboardingFlow onComplete={handleOnboardingComplete} />}
 
-        <div className="flex-1 w-full relative overflow-hidden">
-          {activeTab === 'insight' && <InsightTab onNavigate={setActiveTab} />}
-          {activeTab === 'my-thesis' && <MyThesisTab onStockClick={setSelectedStock} onNavigate={setActiveTab} />}
-          {activeTab === 'discovery' && <DiscoveryTab onStockClick={handleStockClickFromDiscovery} />}
-        </div>
+        {isOnboardingComplete && (
+          <>
+            <div className="flex-1 w-full relative overflow-hidden">
+              {activeTab === 'insight' && <InsightTab onNavigate={setActiveTab} />}
+              {activeTab === 'my-thesis' && <MyThesisTab onStockClick={setSelectedStock} onNavigate={setActiveTab} />}
+              {activeTab === 'discovery' && <DiscoveryTab onStockClick={handleStockClickFromDiscovery} />}
+            </div>
 
-        <nav className="absolute bottom-0 left-0 right-0 z-40 bg-[#121212]/90 backdrop-blur-xl border-t border-white/5 pb-safe-bottom">
-          <div className="flex justify-around items-center h-[88px] pb-4 px-2">
-            {(['insight', 'my-thesis', 'discovery'] as Tab[]).map((tab) => (
-               <button key={tab} onClick={() => setActiveTab(tab)} className="flex flex-col items-center justify-center w-full h-full space-y-1.5 transition-all">
-                  <div className={`p-1.5 rounded-2xl ${activeTab === tab ? 'bg-white/10' : ''}`}>
-                    {tab === 'insight' && <CalendarClock size={28} className={activeTab === tab ? 'text-indigo-500' : 'text-zinc-500'} />}
-                    {tab === 'my-thesis' && <Lightbulb size={28} className={activeTab === tab ? 'text-indigo-500' : 'text-zinc-500'} />}
-                    {tab === 'discovery' && <Compass size={28} className={activeTab === tab ? 'text-indigo-500' : 'text-zinc-500'} />}
-                  </div>
-               </button>
-            ))}
-          </div>
-        </nav>
+            <nav className="absolute bottom-0 left-0 right-0 z-40 bg-[#121212]/90 backdrop-blur-xl border-t border-white/5 pb-safe-bottom">
+              <div className="flex justify-around items-center h-[88px] pb-4 px-2">
+                {(['insight', 'my-thesis', 'discovery'] as Tab[]).map((tab) => (
+                  <button key={tab} onClick={() => setActiveTab(tab)} className="flex flex-col items-center justify-center w-full h-full space-y-1.5 transition-all">
+                      <div className={`p-1.5 rounded-2xl ${activeTab === tab ? 'bg-white/10' : ''}`}>
+                        {tab === 'insight' && <CalendarClock size={28} className={activeTab === tab ? 'text-indigo-500' : 'text-zinc-500'} />}
+                        {tab === 'my-thesis' && <Lightbulb size={28} className={activeTab === tab ? 'text-indigo-500' : 'text-zinc-500'} />}
+                        {tab === 'discovery' && <Compass size={28} className={activeTab === tab ? 'text-indigo-500' : 'text-zinc-500'} />}
+                      </div>
+                  </button>
+                ))}
+              </div>
+            </nav>
+          </>
+        )}
 
         {selectedStock && <StockDetailModal stock={selectedStock} onClose={() => setSelectedStock(null)} onAddLogic={() => handleOpenBuilder(selectedStock)} />}
+        
         {narrativeTarget && <div className="fixed inset-0 z-[200]"><NarrativeIntro stock={narrativeTarget} onClose={() => setNarrativeTarget(null)} onComplete={handleGlobalNarrativeComplete} /></div>}
+
         {isBuilderOpen && builderTarget && <div className="fixed inset-0 z-[200]"><WatchpointBuilder stock={builderTarget} onClose={() => setIsBuilderOpen(false)} onComplete={() => setIsBuilderOpen(false)} /></div>}
+
         {isNotificationOpen && <NotificationModal onClose={() => setIsNotificationOpen(false)} onNotificationClick={handleNotificationClick} />}
 
       </main>
