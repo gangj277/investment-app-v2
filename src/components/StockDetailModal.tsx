@@ -27,6 +27,10 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
   const [showEventMode, setShowEventMode] = useState(false);
   const [showWatchpointBuilder, setShowWatchpointBuilder] = useState(false);
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
+
+  // Debug logging
+  console.log('StockDetailModal - showWatchpointBuilder:', showWatchpointBuilder);
+  console.log('StockDetailModal - stock.watchpoints:', stock.watchpoints);
   
   const isInvested = data.myThesis.some(t => t.ticker === stock.ticker);
 

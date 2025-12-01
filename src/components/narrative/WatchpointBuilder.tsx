@@ -11,7 +11,11 @@ interface WatchpointBuilderProps {
 
 const WatchpointBuilder: React.FC<WatchpointBuilderProps> = ({ stock, onComplete, onClose }) => {
   const watchpoints = stock.watchpoints || [];
-  
+
+  // Debug logging
+  console.log('WatchpointBuilder mounted - watchpoints:', watchpoints);
+  console.log('WatchpointBuilder mounted - stock:', stock);
+
   const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selections, setSelections] = useState<Record<number, 'Bull' | 'Bear'>>({});
@@ -41,14 +45,34 @@ const WatchpointBuilder: React.FC<WatchpointBuilderProps> = ({ stock, onComplete
 
   const isCurrentSelected = currentItem ? !!selections[currentItem.id] : false;
 
-  // Auto-complete if no watchpoints available
-  useEffect(() => {
-      if (watchpoints.length === 0) {
-          onComplete([]);
-      }
-  }, [watchpoints, onComplete]);
-
-  if (watchpoints.length === 0) return null;
+  // Empty state - don't auto-close anymore
+  if (watchpoints.length === 0) {
+    return (
+      <div className="flex flex-col h-full bg-gradient-to-b from-zinc-900 to-black items-center justify-center px-8 text-center border-2 border-app-accent/30">
+        <div className="w-24 h-24 bg-app-accent/10 rounded-full flex items-center justify-center mb-6 animate-pulse">
+          <AlertCircle size={48} className="text-app-accent" />
+        </div>
+        <h2 className="text-3xl font-bold text-white mb-4">
+          왓치포인트가 아직 없습니다
+        </h2>
+        <p className="text-zinc-300 leading-relaxed mb-10 text-base">
+          이 종목에 대한 감시 기준이 아직 설정되지 않았습니다.<br/>
+          AI가 제안하는 기준을 추가하거나,<br/>
+          직접 만들어보세요.
+        </p>
+        <button
+          onClick={() => {
+            console.log('Empty state close button clicked');
+            onComplete([]);
+            onClose();
+          }}
+          className="px-10 py-4 bg-app-accent hover:bg-indigo-400 rounded-full text-white font-bold text-lg transition-all shadow-lg active:scale-95"
+        >
+          닫기
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full bg-[#121212] relative font-sans">

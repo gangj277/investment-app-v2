@@ -6,7 +6,7 @@ import InsightTab from './components/InsightTab';
 import MyThesisTab from './components/MyThesisTab';
 import DiscoveryTab from './components/DiscoveryTab';
 import StockDetailModal from './components/StockDetailModal';
-import OnboardingFlow from './components/onboarding/OnboardingFlow';
+import OnboardingFlow from './components/stock-detail/OnboardingFlow';
 import NotificationModal from './components/NotificationModal';
 import NarrativeIntro from './components/narrative/NarrativeIntro';
 import WatchpointBuilder from './components/narrative/WatchpointBuilder'; 
