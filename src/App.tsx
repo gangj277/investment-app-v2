@@ -98,7 +98,7 @@ const AppContent: React.FC = () => {
 
         {selectedStock && <StockDetailModal stock={selectedStock} onClose={() => setSelectedStock(null)} onAddLogic={() => handleOpenBuilder(selectedStock)} />}
 
-        {narrativeTarget && <div className="fixed inset-0 z-[200]"><NarrativeIntro stock={narrativeTarget} onClose={() => setNarrativeTarget(null)} onComplete={handleGlobalNarrativeComplete} /></div>}
+        {narrativeTarget && <div className="absolute inset-0 z-[200]"><NarrativeIntro stock={narrativeTarget} onClose={() => setNarrativeTarget(null)} onComplete={handleGlobalNarrativeComplete} /></div>}
 
         {isBuilderOpen && builderTarget && <div className="fixed inset-0 z-[200]"><WatchpointBuilder stock={builderTarget} onClose={() => setIsBuilderOpen(false)} onComplete={() => setIsBuilderOpen(false)} /></div>}
 
