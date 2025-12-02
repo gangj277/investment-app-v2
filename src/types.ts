@@ -43,20 +43,33 @@ export interface SummaryHighlight {
 }
 
 // --- NEW CORE: NARRATIVE & LOGIC ---
+export interface NarrativeStep {
+  title: string;
+  content: string; // Markdown supported
+}
+
 export interface NarrativeProfile {
-  question: string;
-  description: {
-    why_important: {
-      summary: string;
-      content: string;
+  question: string; // Main overarching question
+  steps: {
+    history: NarrativeStep; // Step 1: Why Now?
+    floor: NarrativeStep;   // Step 2: The Floor
+    upside: NarrativeStep;  // Step 3: The Upside
+    debate: {               // Step 4: Debate & Data
+      title: string;
+      question: string;
+      bulls: { title: string; items: string[] }[];
+      bears: { title: string; items: string[] }[];
     };
-    current_situation: {
-      summary: string;
+    final: {                // Step 5: The Final Bet
+      title: string;
       content: string;
+      options: {
+        label: string;
+        value: 'Buy' | 'Watch';
+        desc: string;
+      }[];
     };
   };
-  tags: string[];
-  answer_choices: string[];
 }
 
 export interface WatchpointOption {
@@ -67,6 +80,7 @@ export interface WatchpointOption {
 
 export interface Watchpoint {
   id: number;
+  title: string; // e.g. "[기존 사업]", "[신규 사업]"
   question: string;
   context: string;
   options: WatchpointOption[];
@@ -102,6 +116,7 @@ export interface EventCheckpoint {
 export interface EventScenario {
   label: string;
   action: 'buy' | 'hold' | 'sell';
+  rationale: string;
 }
 
 export interface EventActionHistory {
@@ -113,10 +128,15 @@ export interface EventActionHistory {
 export interface Event {
   id: string;
   title: string;
-  date: string; 
+  date: string;
   type: string;
   status: 'Upcoming' | 'Active' | 'Completed';
-  checkpoints: EventCheckpoint[];
+  relatedWatchpointId?: number;
+  factCheck?: {
+    status: 'Pass' | 'Fail' | 'Pending';
+    actualValue: string;
+    description: string;
+  };
   marketReaction: {
     priceChange: string;
     volumeChange: string;
@@ -124,8 +144,11 @@ export interface Event {
   };
   analysis: {
     cause: string;
-    context: string;
+    context?: string;
+    implication: string;
   };
+  pros: string[];
+  cons: string[];
   scenarios: EventScenario[];
   myActionHistory?: EventActionHistory;
   impact?: 'High' | 'Medium' | 'Low';
@@ -153,10 +176,10 @@ export interface Thesis {
   changeRate: number;
   status: 'Invested' | 'Watching';
   narrative: NarrativeProfile;
-  watchpoints: Watchpoint[]; 
+  watchpoints: Watchpoint[];
   logicHealth: LogicHealth;
   events: Event[];
-  logicBlocks: LogicBlock[]; 
+  logicBlocks: LogicBlock[];
   companyProfile: CompanyProfile;
   newsTags: NewsItem[];
   dailyBriefing: string;
@@ -190,7 +213,7 @@ export interface SearchResultSample {
   chartContext: string;
   narrative: NarrativeProfile;
   watchpoints: Watchpoint[];
-  events?: Event[]; 
+  events?: Event[]; // Added events array
   availableLogicBlocks: LogicBlock[];
 }
 
