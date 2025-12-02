@@ -80,6 +80,7 @@ export interface WatchpointOption {
 
 export interface Watchpoint {
   id: number;
+  title: string; // e.g. "[기존 사업]", "[신규 사업]"
   question: string;
   context: string;
   options: WatchpointOption[];

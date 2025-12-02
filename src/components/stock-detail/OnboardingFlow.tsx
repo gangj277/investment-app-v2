@@ -4,12 +4,13 @@ import { useStore, ALL_STOCKS } from '../../contexts/StoreContext';
 import { SearchResultSample, Thesis } from '../../types';
 import { TEXT } from '../../constants/text';
 import NarrativeIntro from '../narrative/NarrativeIntro';
+import WatchpointBuilder from '../narrative/WatchpointBuilder';
 
 interface OnboardingFlowProps {
   onComplete: (stock?: Thesis) => void;
 }
 
-type Step = 'splash' | 'intro' | 'name' | 'ocr' | 'stock-select' | 'narrative' | 'permission';
+type Step = 'splash' | 'intro' | 'name' | 'ocr' | 'stock-select' | 'narrative' | 'alert-setup' | 'watchpoint' | 'permission';
 
 const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
   const [step, setStep] = useState<Step>('splash');
@@ -57,6 +58,18 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
     const status = decision === 'Buy' ? 'Invested' : 'Watching';
     const newThesis = addToMyThesis(selectedStock, [], status);
     setFinalThesis(newThesis);
+
+    if (decision === 'Buy') {
+      setStep('alert-setup');
+    } else {
+      setStep('permission');
+    }
+  };
+
+  const handleWatchpointComplete = (selections: { watchpointId: number, side: 'Bull' | 'Bear' }[]) => {
+    // In a real app, we would update the thesis with these selections here.
+    // For now, we just move to permission.
+    console.log('Watchpoints selected:', selections);
     setStep('permission');
   };
 
@@ -113,6 +126,49 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
       {step === 'narrative' && selectedStock && (
         <div className="absolute inset-0 z-[210] bg-[#121212]">
           <NarrativeIntro stock={selectedStock} onComplete={handleNarrativeComplete} onClose={() => setStep('stock-select')} />
+        </div>
+      )}
+
+      {step === 'alert-setup' && (
+        <div className="w-full h-full flex flex-col px-8 pt-24 pb-12 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <div className="w-24 h-24 bg-indigo-500/10 rounded-full flex items-center justify-center mb-8">
+              <Bell size={48} className="text-indigo-500" />
+            </div>
+            <h2 className="text-3xl font-bold mb-4 leading-tight">
+              대응이 필요할 때<br />
+              <span className="text-indigo-500">알림</span>을 드립니다.
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              단순 시세 알림이 아닙니다.<br />
+              설정하신 시나리오가 현실이 될 때<br />
+              가장 먼저 알려드릴게요.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <button
+              onClick={() => setStep('watchpoint')}
+              className="w-full h-14 bg-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/20 active:scale-95 transition-all"
+            >
+              핵심 포인트 잡아두기
+            </button>
+            <button
+              onClick={() => setStep('permission')}
+              className="w-full h-14 bg-transparent text-zinc-500 font-medium rounded-2xl hover:bg-white/5 transition-colors"
+            >
+              일단 넘어가기
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 'watchpoint' && selectedStock && (
+        <div className="absolute inset-0 z-[220] bg-[#121212]">
+          <WatchpointBuilder
+            stock={selectedStock}
+            onClose={() => setStep('permission')}
+            onComplete={(selections) => handleWatchpointComplete(selections)}
+          />
         </div>
       )}
 
