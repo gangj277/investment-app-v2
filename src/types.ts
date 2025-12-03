@@ -241,6 +241,7 @@ export interface Notification {
   desc: string;
   stockId?: number;
   ticker?: string;
+  eventId?: string;
   timestamp: string;
   isRead: boolean;
 }

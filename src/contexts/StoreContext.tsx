@@ -166,20 +166,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     setData(prev => ({
       ...prev,
-      myThesis: [newThesis, ...prev.myThesis],
-      notifications: [
-        {
-          id: Date.now(),
-          type: 'info',
-          title: `${stock.name} 가설 등록 완료`,
-          desc: '성공적으로 저장되었습니다.',
-          timestamp: '방금 전',
-          isRead: false,
-          stockId: newThesis.id,
-          ticker: newThesis.ticker
-        },
-        ...prev.notifications
-      ]
+      myThesis: [newThesis, ...prev.myThesis]
     }));
     return newThesis;
   };

@@ -15,8 +15,8 @@ export const ALL_STOCKS: SearchResultSample[] = [
       question: "JYP, 글로벌 플랫폼 될까?",
       steps: {
         history: {
-          title: "Why Now?",
-          content: "지금 엔터주는 '위기'이자 '기회'의 갈림길에 서 있습니다. K-POP의 성장이 정점에 달했다는 우려(Peak-out)와, 현지화 아이돌을 통해 새로운 시장이 열릴 것이라는 기대가 팽팽하게 맞서고 있기 때문입니다. 특히 JYP는 가장 적극적으로 '현지화 시스템(A2K, NiziU 등)'을 시도하고 있어, 이 실험의 성공 여부가 주가의 향방을 결정할 중요한 시점입니다."
+          title: "핵심 논점",
+          content: "**지금 엔터주는 '위기'이자 '기회'의 갈림길에 서 있습니다.**\n\n- K-POP의 성장이 정점에 달했다는 우려(Peak-out)\n- 현지화 아이돌을 통해 새로운 시장이 열릴 것이라는 기대\n\n이 두 가지가 팽팽하게 맞서고 있습니다. 특히 JYP는 가장 적극적으로 **'현지화 시스템(A2K, NiziU 등)'**을 시도하고 있어, 이 실험의 성공 여부가 주가의 향방을 결정할 중요한 시점입니다."
         },
         floor: {
           title: "기초 체력",
@@ -30,17 +30,17 @@ export const ALL_STOCKS: SearchResultSample[] = [
           title: "Debate",
           question: "현지화 아이돌, 진짜 돈이 될까?",
           bulls: [
-            { title: "확장성 무한대", items: ["현지 언어/문화 장벽 해소", "북미/일본 시장의 거대한 파이"] },
-            { title: "이익률 개선", items: ["현지 활동으로 비용 절감", "로열티 수익 구조"] }
+            { title: "확장성 무한대", items: ["**현지 언어/문화 장벽 해소**", "**북미/일본 시장의 거대한 파이**"] },
+            { title: "이익률 개선", items: ["**현지 활동으로 비용 절감**", "**로열티 수익 구조**"] }
           ],
           bears: [
-            { title: "K-POP 정체성 모호", items: ["한국 없는 K-POP의 매력 반감", "팬덤 결집력 약화 가능성"] },
-            { title: "성공 불확실성", items: ["초기 투자 비용 부담", "현지 대형 기획사와의 경쟁"] }
+            { title: "K-POP 정체성 모호", items: ["**한국 없는 K-POP의 매력 반감**", "**팬덤 결집력 약화 가능성**"] },
+            { title: "성공 불확실성", items: ["**초기 투자 비용 부담**", "**현지 대형 기획사와의 경쟁**"] }
           ]
         },
         final: {
           title: "Final Bet",
-          content: "JYP는 K-POP의 '산업화'를 가장 잘 증명해온 기업입니다. 이제 그 시스템을 전 세계에 이식하려 합니다. 이 거대한 실험에 배팅하시겠습니까?",
+          content: "JYP는 K-POP의 '산업화'를 가장 잘 증명해온 기업입니다. 이제 그 시스템을 전 세계에 이식하려 합니다.\n\n**이 거대한 실험에 배팅하시겠습니까?**",
           options: [
             { label: "Yes (Buy)", value: "Buy", desc: "시스템의 힘을 믿는다. 지금이 저점 매수의 기회." },
             { label: "No (Watch)", value: "Watch", desc: "아직은 시기상조. 현지화 프로젝트 성과를 확인하고 싶다." }
@@ -1574,16 +1574,18 @@ export const getInitialData = () => {
   return {
     user: {
       name: "김인베",
+      profileMsg: "성공적인 투자를 위해!",
+      totalWinRate: 65.4,
       totalAssetValue: 26403757,
       totalProfitValue: 443190,
       totalProfitRate: 1.7,
       holdings: {
         domestic: [
-          { id: 'h1', ticker: '035900', name: 'JYP Ent.', quantity: 15, valuation: 873000, profitValue: -11500, profitRate: -1.3 },
+          { id: 'h1', ticker: '035900', name: 'JYP Ent.', quantity: 15, currency: 'KRW', valuation: 873000, profitValue: -11500, profitRate: -1.3 },
         ],
         overseas: [
-          { id: 'h2', ticker: 'PLTR', name: '팔란티어', quantity: 50, valuation: 1707500, profitValue: 235500, profitRate: 16.0 },
-          { id: 'h3', ticker: 'GOOGL', name: '구글', quantity: 10, valuation: 2458000, profitValue: 267000, profitRate: 12.2 },
+          { id: 'h2', ticker: 'PLTR', name: '팔란티어', quantity: 50, currency: 'KRW', valuation: 1707500, profitValue: 235500, profitRate: 16.0 },
+          { id: 'h3', ticker: 'GOOGL', name: '구글', quantity: 10, currency: 'KRW', valuation: 2458000, profitValue: 267000, profitRate: 12.2 },
         ]
       }
     },
@@ -1591,19 +1593,41 @@ export const getInitialData = () => {
     marketWeather: {
       status: 'Sunny',
       summaryTitle: 'AI 주도 장세 지속',
+      summaryBody: '전반적인 시장 분위기가 좋습니다.',
       indices: [
-        { name: 'KOSPI', value: 2650.45, changeRate: 0.8, chartData: generateChartData(2630, 50, 'up') },
-        { name: 'S&P 500', value: 5100.20, changeRate: 1.2, chartData: generateChartData(5050, 50, 'up') },
-        { name: 'NASDAQ', value: 16000.50, changeRate: 1.5, chartData: generateChartData(15800, 50, 'up') }
+        { name: 'KOSPI', value: '2,650.45', rate: 0.8, trend: 'up', chartData: generateChartData(2630, 50, 'up') },
+        { name: 'S&P 500', value: '5,100.20', rate: 1.2, trend: 'up', chartData: generateChartData(5050, 50, 'up') },
+        { name: 'NASDAQ', value: '16,000.50', rate: 1.5, trend: 'up', chartData: generateChartData(15800, 50, 'up') }
       ]
     },
     summaryHighlights: [
       { text: "AI 반도체 섹터가 시장을 주도하고 있습니다.", isBold: true },
       { text: " 금리 인하 기대감은 다소 후퇴했으나, 기업 실적이 이를 상쇄하고 있습니다." }
     ],
+    hotIssues: [],
     notifications: [
-      { id: 1, type: 'alert', title: 'JYP Ent. 주가 급변', desc: '설정하신 -5% 도달 알림', timestamp: '10분 전', isRead: false, stockId: 123, ticker: '035900' },
-      { id: 2, type: 'info', title: '팔란티어 실적 발표', desc: '예상치 상회, 시간외 +10%', timestamp: '1시간 전', isRead: false, stockId: 124, ticker: 'PLTR' }
+      {
+        id: 1,
+        type: 'alert',
+        title: 'JYP Ent. 긴급 이슈',
+        desc: '[-4.5%] VCHA 글로벌 데뷔 지표 발표',
+        stockId: undefined,
+        ticker: '035900',
+        eventId: 'evt-jyp-1',
+        timestamp: '10분 전',
+        isRead: false
+      },
+      {
+        id: 2,
+        type: 'info',
+        title: '팔란티어 리포트 업데이트',
+        desc: '[+5.2%] AIP 부트캠프 전환율 보고서',
+        stockId: undefined,
+        ticker: 'PLTR',
+        eventId: 'evt-pltr-1',
+        timestamp: '1시간 전',
+        isRead: false
+      }
     ],
     discovery: {
       trendingLogics: [

@@ -17,9 +17,10 @@ interface StockDetailModalProps {
     isLearningMode?: boolean;
     onReturnToQuiz?: () => void;
     onAddLogic?: () => void;
+    initialEventId?: string;
 }
 
-const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isLearningMode = false, onReturnToQuiz, onAddLogic }) => {
+const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isLearningMode = false, onReturnToQuiz, onAddLogic, initialEventId }) => {
     const { data, recordEventDecision } = useStore();
     const [activeTimeFrame, setActiveTimeFrame] = useState<TimeFrame>('1M');
     const [isProfileExpanded, setIsProfileExpanded] = useState(false);
@@ -32,6 +33,17 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
     const [showEventMode, setShowEventMode] = useState(false);
     const [showWatchpointBuilder, setShowWatchpointBuilder] = useState(false);
     const [activeEvent, setActiveEvent] = useState<Event | null>(null);
+
+    // Auto-open event if initialEventId is provided
+    React.useEffect(() => {
+        if (initialEventId) {
+            const targetEvent = latestStock.events.find(e => e.id === initialEventId);
+            if (targetEvent && targetEvent.status !== 'Completed') {
+                setActiveEvent(targetEvent);
+                setShowEventMode(true);
+            }
+        }
+    }, [initialEventId, latestStock.events]);
 
     const isInvested = data.myThesis.some(t => t.ticker === latestStock.ticker);
 
@@ -168,19 +180,22 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
             <div className="w-full max-w-[430px] h-[95vh] bg-[#121212] rounded-t-[32px] pointer-events-auto overflow-hidden flex flex-col shadow-2xl animate-in slide-in-from-bottom duration-300 relative border-t border-white/10 mx-auto">
 
                 {/* --- HEADER --- */}
-                <header className="flex justify-between items-center px-6 py-6 border-b border-white/5 bg-[#121212]/95 backdrop-blur-md sticky top-0 z-10">
+                <header className="flex justify-between items-start px-6 py-6 border-b border-white/5 bg-[#121212]/95 backdrop-blur-md sticky top-0 z-10">
                     <div>
                         <div className="text-sm font-bold text-zinc-500 mb-0.5">{stock.ticker}</div>
                         <h2 className="text-2xl font-bold text-white tracking-tight">{stock.name}</h2>
-                    </div>
-                    <div className="text-right">
-                        <div className="text-2xl font-bold text-white tracking-tight">{formatCurrency(stock.currentPrice, 'USD')}</div>
-                        <div className={`text-base font-bold ${getRateColorClass(stock.changeRate)}`}>
-                            {formatRate(stock.changeRate)}
+
+                        {/* Moved Price Info Here to avoid overlap */}
+                        <div className="flex items-baseline gap-2 mt-1">
+                            <span className="text-xl font-bold text-white tracking-tight">{formatCurrency(stock.currentPrice, 'USD')}</span>
+                            <span className={`text-sm font-bold ${getRateColorClass(stock.changeRate)}`}>
+                                {formatRate(stock.changeRate)}
+                            </span>
                         </div>
                     </div>
+
                     {!isLearningMode && (
-                        <button onClick={onClose} className="ml-4 p-2 rounded-full bg-black/50 hover:bg-zinc-800 text-white absolute right-6 top-6 z-50 backdrop-blur-md border border-white/10 transition-colors">
+                        <button onClick={onClose} className="p-2 rounded-full bg-zinc-800/50 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors border border-white/5">
                             <X size={24} />
                         </button>
                     )}

@@ -20,6 +20,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
   const [slideIndex, setSlideIndex] = useState(0);
   const [isScanning, setIsScanning] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
+  const [isDirectInput, setIsDirectInput] = useState(false);
   const [scannedStocks, setScannedStocks] = useState<SearchResultSample[]>([]);
   const [selectedStock, setSelectedStock] = useState<SearchResultSample | null>(null);
   const [finalThesis, setFinalThesis] = useState<Thesis | undefined>(undefined);
@@ -110,7 +111,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
       {step === 'ocr' && (
         <div className="w-full h-full flex flex-col px-6 pt-24 pb-8">
           <h2 className="text-3xl font-bold mb-2">포트폴리오 스캔</h2>
-          <p className="text-zinc-400 mb-8">보유 계좌를 찍어서 업로드 해주세요.</p>
+          <p className="text-zinc-400 mb-8">사용하시는 MTS의 투자 현황 스크린샷을 올려주세요.</p>
 
           <div className="flex-1 bg-zinc-900 rounded-3xl flex flex-col items-center justify-center border border-white/10 relative overflow-hidden">
             {isScanning ? (
@@ -158,6 +159,26 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
                   </div>
                 </div>
               </div>
+            ) : isDirectInput ? (
+              <div className="w-full h-full p-6 flex flex-col">
+                <h3 className="text-xl font-bold text-white mb-6">직접 입력하기</h3>
+                <div className="space-y-4 flex-1">
+                  <div>
+                    <label className="text-xs text-zinc-500 font-bold block mb-1.5">종목명 (필수)</label>
+                    <input type="text" placeholder="예: 삼성전자, 테슬라" className="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-indigo-500 transition-colors" />
+                  </div>
+                  <div>
+                    <label className="text-xs text-zinc-500 font-bold block mb-1.5">보유주식수 (선택)</label>
+                    <input type="number" placeholder="0" className="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-indigo-500 transition-colors" />
+                  </div>
+                </div>
+                <button onClick={handleScan} className="w-full h-12 bg-indigo-500 text-white font-bold rounded-xl mt-4">
+                  입력 완료
+                </button>
+                <button onClick={() => setIsDirectInput(false)} className="w-full h-12 text-zinc-500 font-bold rounded-xl mt-2">
+                  취소
+                </button>
+              </div>
             ) : (
               <div className="flex flex-col items-center text-zinc-600">
                 <Camera size={48} className="mb-4 opacity-50" />
@@ -165,10 +186,24 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
               </div>
             )}
           </div>
-          <div className="h-8" />
-          <button onClick={handleScan} className="w-full h-14 bg-white text-black font-bold rounded-2xl">
-            {scanComplete ? "분석 결과 확인" : "이미지 업로드"}
-          </button>
+          <div className="h-4" />
+
+          {!isDirectInput && !scanComplete && !isScanning && (
+            <>
+              <button onClick={handleScan} className="w-full h-14 bg-white text-black font-bold rounded-2xl mb-3">
+                이미지 업로드
+              </button>
+              <button onClick={() => setIsDirectInput(true)} className="w-full h-14 bg-zinc-800 text-white font-bold rounded-2xl border border-white/10">
+                직접 입력하기
+              </button>
+            </>
+          )}
+
+          {scanComplete && (
+            <button onClick={handleScan} className="w-full h-14 bg-white text-black font-bold rounded-2xl mt-4">
+              분석 결과 확인
+            </button>
+          )}
         </div>
       )}
 

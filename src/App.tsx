@@ -26,6 +26,7 @@ const AppContent: React.FC = () => {
   const [builderTarget, setBuilderTarget] = useState<Thesis | SearchResultSample | null>(null);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [popupNotification, setPopupNotification] = useState<Notification | null>(null);
+  const [initialEventId, setInitialEventId] = useState<string | undefined>(undefined);
 
   const unreadCount = data.notifications.filter(n => !n.isRead).length;
 
@@ -47,7 +48,7 @@ const AppContent: React.FC = () => {
     setIsOnboardingComplete(true);
     setActiveTab('my-thesis');
     if (newThesis) {
-      setTimeout(() => setSelectedStock(newThesis), 100);
+      setSelectedStock(newThesis);
     }
   };
 
@@ -73,7 +74,11 @@ const AppContent: React.FC = () => {
   const handleNotificationClick = (notification: Notification) => {
     setIsNotificationOpen(false);
     let targetThesis = data.myThesis.find(s => s.id === notification.stockId || s.ticker === notification.ticker);
-    if (targetThesis) { setActiveTab('my-thesis'); setSelectedStock(targetThesis); }
+    if (targetThesis) {
+      setActiveTab('my-thesis');
+      setSelectedStock(targetThesis);
+      if (notification.eventId) setInitialEventId(notification.eventId);
+    }
   };
 
   const handlePopupClick = (notification: Notification) => {
@@ -86,6 +91,7 @@ const AppContent: React.FC = () => {
     if (targetThesis) {
       setActiveTab('my-thesis');
       setSelectedStock(targetThesis);
+      if (notification.eventId) setInitialEventId(notification.eventId);
     }
   };
 
@@ -134,7 +140,14 @@ const AppContent: React.FC = () => {
           </>
         )}
 
-        {selectedStock && <StockDetailModal stock={selectedStock} onClose={() => setSelectedStock(null)} onAddLogic={() => handleOpenBuilder(selectedStock)} />}
+        {selectedStock && (
+          <StockDetailModal
+            stock={selectedStock}
+            onClose={() => { setSelectedStock(null); setInitialEventId(undefined); }}
+            onAddLogic={() => handleOpenBuilder(selectedStock)}
+            initialEventId={initialEventId}
+          />
+        )}
 
         {narrativeTarget && <div className="absolute inset-0 z-[200]"><NarrativeIntro stock={narrativeTarget} onClose={() => setNarrativeTarget(null)} onComplete={handleGlobalNarrativeComplete} /></div>}
 
