@@ -80,12 +80,20 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
   return (
     <div className="absolute inset-0 z-[200] bg-[#121212] flex flex-col items-center justify-center text-white overflow-hidden font-sans">
       {step === 'splash' && (
-        <div className="text-center"><h1 className="text-7xl font-black text-indigo-500">{TEXT.COMMON.APP_NAME}</h1></div>
+        <div className="text-center">
+          <h1 className="text-7xl font-black text-indigo-500 mb-4">{TEXT.COMMON.APP_NAME}</h1>
+          <p className="text-zinc-400 text-lg font-medium animate-pulse">나만의 투자 논리를 쉽게 만들고, 알림 받기</p>
+        </div>
       )}
 
       {step === 'intro' && (
         <div className="w-full h-full flex flex-col justify-end p-6 bg-[#121212]">
-          <div className="flex-1 flex flex-col justify-center px-6"><h1 className="text-4xl font-black">감이 아닌,<br /><span className="text-indigo-500">논리로.</span></h1></div>
+          <div className="flex-1 flex flex-col justify-center px-6">
+            <h1 className="text-4xl font-black leading-tight">
+              자극과 충동이 아닌,<br />
+              <span className="text-indigo-500">정보와 근거 기반으로.</span>
+            </h1>
+          </div>
           <button onClick={() => setStep('name')} className="w-full h-14 bg-white text-black font-bold rounded-2xl">시작하기</button>
         </div>
       )}
@@ -100,13 +108,67 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
       )}
 
       {step === 'ocr' && (
-        <div className="w-full h-full flex flex-col px-8 pt-24 pb-8">
-          <h2 className="text-3xl font-bold mb-8">포트폴리오 스캔</h2>
-          <div className="flex-1 bg-zinc-800 rounded-3xl flex items-center justify-center border border-white/10">
-            {isScanning ? <span className="animate-pulse text-indigo-500">분석 중...</span> : scanComplete ? <Check size={40} className="text-white" /> : <Camera size={40} className="text-zinc-600" />}
+        <div className="w-full h-full flex flex-col px-6 pt-24 pb-8">
+          <h2 className="text-3xl font-bold mb-2">포트폴리오 스캔</h2>
+          <p className="text-zinc-400 mb-8">보유 계좌를 찍어서 업로드 해주세요.</p>
+
+          <div className="flex-1 bg-zinc-900 rounded-3xl flex flex-col items-center justify-center border border-white/10 relative overflow-hidden">
+            {isScanning ? (
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4" />
+                <span className="animate-pulse text-indigo-500 font-bold">자산 분석 중...</span>
+              </div>
+            ) : scanComplete ? (
+              <div className="w-full h-full p-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex justify-between items-end mb-6">
+                  <div>
+                    <h3 className="text-zinc-400 text-sm font-bold mb-1">총 보유자산</h3>
+                    <div className="text-3xl font-black text-white">26,403,757원</div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {[
+                    { name: 'JYP Ent.', ticker: '035900', price: '58,200원', profit: '-1.3%', isPlus: false },
+                    { name: '팔란티어', ticker: 'PLTR', price: '34,150원', profit: '+16.0%', isPlus: true },
+                    { name: '구글', ticker: 'GOOGL', price: '245,800원', profit: '+12.2%', isPlus: true },
+                  ].map((item, i) => (
+                    <div key={i} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-zinc-400 text-xs">
+                          {item.name[0]}
+                        </div>
+                        <div>
+                          <div className="font-bold text-white">{item.name}</div>
+                          <div className="text-xs text-zinc-500">{item.ticker}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-white">{item.price}</div>
+                        <div className={`text-xs font-bold ${item.isPlus ? 'text-red-400' : 'text-blue-400'}`}>{item.profit}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+                  <div className="bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                    <Check size={16} />
+                    <span>인식 완료</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center text-zinc-600">
+                <Camera size={48} className="mb-4 opacity-50" />
+                <span className="text-sm">스크린샷 또는 사진 업로드</span>
+              </div>
+            )}
           </div>
           <div className="h-8" />
-          <button onClick={handleScan} className="w-full h-14 bg-white text-black font-bold rounded-2xl">이미지 업로드</button>
+          <button onClick={handleScan} className="w-full h-14 bg-white text-black font-bold rounded-2xl">
+            {scanComplete ? "분석 결과 확인" : "이미지 업로드"}
+          </button>
         </div>
       )}
 
@@ -115,8 +177,16 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
           <h2 className="text-3xl font-bold mb-8">첫 번째 분석 종목 선택</h2>
           <div className="space-y-4">
             {scannedStocks.map(stock => (
-              <button key={stock.ticker} onClick={() => handleStockSelect(stock)} className="w-full bg-[#1E1E1E] p-6 rounded-3xl border border-white/5 text-left hover:border-indigo-500">
-                <div className="flex justify-between"><span className="text-2xl font-bold">{stock.name}</span><span className={stock.changeRate > 0 ? 'text-red-400' : 'text-blue-400'}>{stock.changeRate}%</span></div>
+              <button key={stock.ticker} onClick={() => handleStockSelect(stock)} className="w-full bg-[#1E1E1E] p-6 rounded-3xl border border-white/5 text-left hover:border-indigo-500 transition-colors">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="text-2xl font-bold block mb-1">{stock.name}</span>
+                    <span className="text-sm text-zinc-500 font-medium">{stock.ticker}</span>
+                  </div>
+                  <span className={`text-lg font-bold ${stock.changeRate > 0 ? 'text-red-400' : 'text-blue-400'}`}>
+                    {stock.changeRate > 0 ? '+' : ''}{stock.changeRate}%
+                  </span>
+                </div>
               </button>
             ))}
           </div>
@@ -136,13 +206,13 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
               <Bell size={48} className="text-indigo-500" />
             </div>
             <h2 className="text-3xl font-bold mb-4 leading-tight">
-              대응이 필요할 때<br />
-              <span className="text-indigo-500">알림</span>을 드립니다.
+              단순한 가격 변동 말고,<br />
+              <span className="text-indigo-500">{name}님의 판단이 필요할 때</span><br />
+              알려드릴게요.
             </h2>
             <p className="text-zinc-400 leading-relaxed">
-              단순 시세 알림이 아닙니다.<br />
               설정하신 시나리오가 현실이 될 때<br />
-              가장 먼저 알려드릴게요.
+              가장 먼저 소식을 전해드립니다.
             </p>
           </div>
           <div className="space-y-3">

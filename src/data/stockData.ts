@@ -12,19 +12,19 @@ export const ALL_STOCKS: SearchResultSample[] = [
     },
     chartContext: "최근 1년 주가는 엔터 업황 부진으로 하락세이나, 글로벌 매출 비중은 꾸준히 상승 중입니다.",
     narrative: {
-      question: "JYP의 K-POP 시스템 수출이 성공하여 글로벌 플랫폼 기업으로 재평가받을 수 있을까?",
+      question: "JYP, 글로벌 플랫폼 될까?",
       steps: {
         history: {
           title: "Why Now?",
           content: "지금 엔터주는 '위기'이자 '기회'의 갈림길에 서 있습니다. K-POP의 성장이 정점에 달했다는 우려(Peak-out)와, 현지화 아이돌을 통해 새로운 시장이 열릴 것이라는 기대가 팽팽하게 맞서고 있기 때문입니다. 특히 JYP는 가장 적극적으로 '현지화 시스템(A2K, NiziU 등)'을 시도하고 있어, 이 실험의 성공 여부가 주가의 향방을 결정할 중요한 시점입니다."
         },
         floor: {
-          title: "The Floor",
-          content: "JYP의 기초 체력은 '시스템'에서 나옵니다. 특정 아티스트 의존도를 낮추고, 체계적인 트레이닝 및 프로듀싱 시스템을 통해 꾸준히 신인을 배출해내는 능력이 탁월합니다. 이는 엔터사 중 가장 높은 영업이익률로 증명되고 있으며, 설령 신사업이 지연되더라도 기존 라인업만으로도 안정적인 수익 창출이 가능하다는 것이 하방을 지지하는 요소입니다."
+          title: "기초 체력",
+          content: "- **시스템의 힘**: 특정 아티스트 의존도를 낮추고, 체계적인 트레이닝 시스템을 구축했습니다.\n- **높은 이익률**: 엔터사 중 가장 높은 영업이익률을 기록하며 안정적인 수익 창출 능력을 증명했습니다."
         },
         upside: {
-          title: "The Upside",
-          content: "주가 상승의 핵심 열쇠(Trigger)는 'K-POP 시스템의 수출'입니다. 단순히 한국 가수가 해외에 나가는 것을 넘어, JYP의 노하우로 미국/일본 현지 가수를 데뷔시키는 'A2K', 'NiziU' 프로젝트가 성공한다면, JYP는 단순 기획사를 넘어 '글로벌 음악 플랫폼'으로 재평가받으며 밸류에이션이 리레이팅될 것입니다."
+          title: "상승 여력",
+          content: "- **K-POP 시스템 수출**: 단순 가수 진출이 아닌, **'현지화 아이돌(A2K, NiziU)'** 프로젝트가 핵심입니다.\n- **글로벌 플랫폼화**: 성공 시 단순 기획사를 넘어 **'글로벌 음악 플랫폼'**으로 재평가될 것입니다."
         },
         debate: {
           title: "Debate",
@@ -51,32 +51,32 @@ export const ALL_STOCKS: SearchResultSample[] = [
     watchpoints: [
       {
         id: 1,
-        title: "[기존 사업]",
-        question: "트와이스와 스트레이키즈, '반짝 유행'일까요 '스테디셀러'일까요?",
-        context: "아이돌 그룹은 보통 데뷔 7년 차가 지나면 인기가 꺾인다는 징크스가 있습니다. 하지만 본 조비나 콜드플레이처럼 **'전설'**이 될 수도 있습니다.\n\nJYP의 간판스타들이 앞으로도 수년간 수백만 명을 콘서트에 모을 수 있을까요?",
+        title: "[성장성]",
+        question: "A2K 프로젝트가 빌보드에 진입할 수 있을까요?",
+        context: "- **미국 시장 반응**: 빌보드 차트 진입 여부와 초기 팬덤 형성 규모가 핵심 지표입니다.\n- **수익화 속도**: 앨범 판매량보다 **투어/굿즈 매출**이 얼마나 빠르게 올라오는지가 중요합니다.",
         options: [
-          { label: "Long-run", side: "Bull", implications: "안정적 수익 유지" },
-          { label: "Fade-out", side: "Bear", implications: "수익 감소 위험" }
+          { label: "성공적 안착", side: "Bull", implications: "밸류에이션 리레이팅" },
+          { label: "기대 이하", side: "Bear", implications: "모멘텀 소멸" }
         ]
       },
       {
         id: 2,
-        title: "[신규 사업]",
-        question: "K-POP, '한국 맛집'인가요 '맥도날드'인가요?",
-        context: "JYP는 이제 한국인 없이, 외국인만으로 구성된 K-POP 그룹을 현지에서 데뷔시키고 있습니다.\n\n만약 이것이 성공하면 JYP는 한국 기획사가 아니라, 전 세계 어디서나 통하는 시스템을 가진 **'글로벌 프랜차이즈 기업'**이 됩니다.",
+        title: "[수익성]",
+        question: "마케팅 비용 급증에도 이익률 25%를 지킬까요?",
+        context: "- **비용 통제**: 신인 데뷔 비용 증가에도 불구하고 **높은 마진율**을 유지하는지 확인해야 합니다.\n- **이익의 질**: 일회성 수익이 아닌, **핵심 IP(스트레이키즈, 트와이스)**의 매출 기여도가 견고해야 합니다.",
         options: [
-          { label: "프랜차이즈", side: "Bull", implications: "주가 대폭 상승 기회" },
-          { label: "로컬 맛집", side: "Bear", implications: "성장 한계 존재" }
+          { label: "이익률 방어", side: "Bull", implications: "시스템 효율성 입증" },
+          { label: "수익성 훼손", side: "Bear", implications: "주가 조정 가능성" }
         ]
       },
       {
         id: 3,
-        title: "[가격 매력도]",
+        title: "[가격]",
         question: "최악의 경우 신인이 망해도 괜찮을까요?",
         context: "투자는 '잃지 않는 것'이 중요합니다. 현재 JYP 주가는 전성기 대비 많이 내려와 있습니다. 미국 현지화 프로젝트가 다 실패하고, 그냥 지금 있는 가수들만 열심히 활동한다고 가정해 봅시다. 그래도 지금 주가라면 사볼 만하다고 느끼시나요?",
         options: [
           { label: "안전함", side: "Bull", implications: "저점 매수 기회" },
-          { label: "위험함", side: "Bear", implications: "관망 필요" }
+          { label: "위험함", side: "Bear", implications: "추가 하락 위험" }
         ]
       }
     ],
@@ -88,7 +88,7 @@ export const ALL_STOCKS: SearchResultSample[] = [
         title: 'VCHA 글로벌 데뷔 지표 발표',
         date: 'Today',
         impact: 'High',
-        relatedWatchpointId: 2,
+        relatedWatchpointId: 1,
         factCheck: {
           status: 'Fail',
           actualValue: '스포티파이 진입 실패',
@@ -118,7 +118,6 @@ export const ALL_STOCKS: SearchResultSample[] = [
         ]
       }
     ],
-
     availableLogicBlocks: [],
     chartHistory: {
       '1D': [58000, 57800, 57500, 57200, 57500, 58000, 58200],
@@ -175,12 +174,12 @@ export const ALL_STOCKS: SearchResultSample[] = [
           content: "AI가 실험실을 넘어 실제 비즈니스 현장에 적용되는 시기입니다. 기업들은 단순히 '신기한 AI'가 아니라, 실제로 돈을 벌어다 주는 '실전형 AI'를 찾고 있습니다. 팔란티어는 오랜 기간 정부/군사 작전에서 검증된 소프트웨어 역량을 바탕으로, 이 '실전 AI' 시장을 선점하려 하고 있습니다."
         },
         floor: {
-          title: "The Floor",
-          content: "팔란티어의 하방은 '미국 정부'가 지지합니다. 국방부, CIA 등과의 장기 계약은 경기 침체와 무관하게 안정적인 현금 흐름을 만들어줍니다. 그 어떤 기업보다 강력한 진입 장벽(보안, 신뢰성)을 구축하고 있어, 쉽게 대체될 수 없는 독보적인 위치를 점하고 있습니다."
+          title: "기초 체력",
+          content: "- **정부라는 든든한 뒷배**: 국방부, CIA 등과의 장기 계약으로 **경기 침체와 무관한** 현금 흐름을 창출합니다.\n- **대체 불가능성**: 최고 수준의 보안과 신뢰성이 요구되는 분야에서 독보적인 진입 장벽을 구축했습니다."
         },
         upside: {
-          title: "The Upside",
-          content: "폭발적인 성장은 민간 기업 시장(Commercial)에 달려 있습니다. 최근 출시한 'AIP(Artificial Intelligence Platform)'가 기업들의 운영 방식을 획기적으로 바꿔놓는다면, 팔란티어는 정부 수주 기업을 넘어 전 세계 모든 기업의 OS(운영체제)가 될 수 있습니다."
+          title: "상승 여력",
+          content: "- **민간 시장(Commercial) 확장**: **'AIP(Artificial Intelligence Platform)'**가 기업 운영의 OS가 될 수 있습니다.\n- **전 산업의 최적화**: 정부 수주 기업을 넘어, 전 세계 모든 기업의 효율성을 극대화하는 **'소프트웨어 표준'**이 되는 것입니다."
         },
         debate: {
           title: "Debate",
@@ -330,12 +329,12 @@ export const ALL_STOCKS: SearchResultSample[] = [
           content: "ChatGPT의 등장으로 '검색의 시대'가 끝났다는 위기론이 대두되었습니다. 하지만 구글은 'Gemini'를 통해 반격을 시작했습니다. 지금은 구글이 검색 시장의 지배력을 유지하면서 AI라는 새로운 파도에 성공적으로 올라탈 수 있을지 판가름 나는 중요한 시기입니다."
         },
         floor: {
-          title: "The Floor",
-          content: "구글의 검색 광고와 유튜브는 여전히 막강한 '현금 창출기(Cash Cow)'입니다. 전 세계인의 습관이 된 검색과 동영상 소비 패턴은 쉽게 바뀌지 않습니다. 이 막대한 자금력은 AI 인프라 투자 경쟁에서 구글이 결코 뒤처지지 않게 하는 든든한 버팀목입니다."
+          title: "기초 체력",
+          content: "- **막강한 Cash Cow**: 검색 광고와 유튜브는 여전히 전 세계인의 일상을 지배하며 막대한 현금을 창출합니다.\n- **자본력의 우위**: 이 자금력은 AI 인프라 투자 경쟁에서 결코 뒤처지지 않게 하는 **든든한 버팀목**입니다."
         },
         upside: {
-          title: "The Upside",
-          content: "AI가 검색 결과에 통합되면서(SGE), 구글은 단순 검색 엔진을 넘어 '개인 비서'로 진화하고 있습니다. 또한 유튜브 쇼핑, 클라우드 성장 등 AI를 접목한 신사업들이 터져준다면, 구글은 다시 한번 거대한 성장을 이뤄낼 수 있습니다."
+          title: "상승 여력",
+          content: "- **AI 비서로의 진화**: 검색 엔진을 넘어, 개인의 모든 디지털 활동을 돕는 **'AI 에이전트'**로 거듭나고 있습니다.\n- **신사업 시너지**: 유튜브 쇼핑, 클라우드 등 AI를 접목한 신사업들이 터져준다면 **제2의 전성기**가 가능합니다."
         },
         debate: {
           title: "Debate",
@@ -1551,43 +1550,116 @@ export const ALL_STOCKS: SearchResultSample[] = [
 export const pendingNarrative = {
   question: "아직 분석되지 않은 종목입니다.",
   steps: {
-    history: { title: "Why Now?", content: "데이터 부족" },
-    floor: { title: "The Floor", content: "데이터 부족" },
-    upside: { title: "The Upside", content: "데이터 부족" },
-    debate: { title: "Debate", question: "데이터 부족", bulls: [], bears: [] },
-    final: { title: "Final Bet", content: "데이터 부족", options: [] }
+    history: { title: "Why Now? (투자 포인트)", content: "데이터 부족" },
+    floor: { title: "The Floor (하방 지지)", content: "데이터 부족" },
+    upside: { title: "The Upside (상방 잠재력)", content: "데이터 부족" },
+    debate: { title: "Debate (논쟁 포인트)", question: "데이터 부족", bulls: [], bears: [] },
+    final: { title: "Final Bet (최종 판단)", content: "데이터 부족", options: [] }
   }
+};
+
+// Helper function to generate dummy chart data
+const generateChartData = (base, volatility, direction) => {
+  const data = [];
+  let currentValue = base;
+  for (let i = 0; i < 5; i++) {
+    data.push(parseFloat(currentValue.toFixed(2)));
+    const change = (Math.random() * volatility / 5) * (direction === 'up' ? 1 : -1);
+    currentValue += change;
+  }
+  return data;
 };
 
 export const getInitialData = () => {
   return {
     user: {
-      name: 'Guest',
-      profileMsg: '투자의 본질을 꿰뚫다',
-      totalWinRate: 0,
-      totalAssetValue: 0,
-      totalProfitValue: 0,
-      totalProfitRate: 0,
+      name: "김인베",
+      totalAssetValue: 26403757,
+      totalProfitValue: 443190,
+      totalProfitRate: 1.7,
       holdings: {
-        domestic: [],
-        overseas: []
+        domestic: [
+          { id: 'h1', ticker: '035900', name: 'JYP Ent.', quantity: 15, valuation: 873000, profitValue: -11500, profitRate: -1.3 },
+        ],
+        overseas: [
+          { id: 'h2', ticker: 'PLTR', name: '팔란티어', quantity: 50, valuation: 1707500, profitValue: 235500, profitRate: 16.0 },
+          { id: 'h3', ticker: 'GOOGL', name: '구글', quantity: 10, valuation: 2458000, profitValue: 267000, profitRate: 12.2 },
+        ]
       }
     },
+    myThesis: [], // Will be synced on load
     marketWeather: {
       status: 'Sunny',
-      summaryTitle: '시장 맑음',
-      summaryBody: '전반적으로 상승세입니다.',
-      indices: []
+      summaryTitle: 'AI 주도 장세 지속',
+      indices: [
+        { name: 'KOSPI', value: 2650.45, changeRate: 0.8, chartData: generateChartData(2630, 50, 'up') },
+        { name: 'S&P 500', value: 5100.20, changeRate: 1.2, chartData: generateChartData(5050, 50, 'up') },
+        { name: 'NASDAQ', value: 16000.50, changeRate: 1.5, chartData: generateChartData(15800, 50, 'up') }
+      ]
     },
-    summaryHighlights: [],
-    hotIssues: [],
-    myThesis: [],
+    summaryHighlights: [
+      { text: "AI 반도체 섹터가 시장을 주도하고 있습니다.", isBold: true },
+      { text: " 금리 인하 기대감은 다소 후퇴했으나, 기업 실적이 이를 상쇄하고 있습니다." }
+    ],
+    notifications: [
+      { id: 1, type: 'alert', title: 'JYP Ent. 주가 급변', desc: '설정하신 -5% 도달 알림', timestamp: '10분 전', isRead: false, stockId: 123, ticker: '035900' },
+      { id: 2, type: 'info', title: '팔란티어 실적 발표', desc: '예상치 상회, 시간외 +10%', timestamp: '1시간 전', isRead: false, stockId: 124, ticker: 'PLTR' }
+    ],
     discovery: {
-      trendingLogics: [],
-      searchResultSample: ALL_STOCKS[0],
-      recentSearches: [],
-      searchResults: []
-    },
-    notifications: []
+      trendingLogics: [
+        {
+          rank: 1,
+          title: "AI의 빈틈, AMD의 반격",
+          subtitle: "엔비디아 독점 시장의 2등주 전략",
+          badge: "바닥 찍고 반등",
+          theme: "blue",
+          keyword: "De-Nvidia",
+          desc: "빅테크 기업들의 탈엔비디아(De-Nvidia) 니즈가 확대되고 있습니다. AMD의 MI300 시리즈가 가성비 대안으로 부각되며, 엔비디아와의 밸류에이션 격차를 좁힐 수 있는 국면입니다.",
+          expertComment: "엔비디아의 공급 부족과 높은 가격은 고객사들에게 '대안'을 찾게 만듭니다. AMD가 완벽하지 않아도, '쓸만한 2등'의 지위만 확보해도 주가는 리레이팅될 수 있습니다.",
+          futureFlow: [50, 45, 48, 60, 75, 85, 90],
+          relatedStocksDetails: [
+            { ticker: "AMD", name: "AMD", rate: 2.1 },
+            { ticker: "NVDA", name: "엔비디아", rate: 2.4 }
+          ]
+        },
+        {
+          rank: 2,
+          title: "전력 슈퍼사이클",
+          subtitle: "AI 데이터센터가 불러온 전력 설비 호황",
+          badge: "신고가 랠리",
+          theme: "gold",
+          keyword: "Power Grid",
+          desc: "AI 데이터센터는 '전기 먹는 하마'입니다. 노후화된 전력망 교체 수요와 맞물려 변압기, 전선 등 전력 인프라 기업들이 유례없는 호황을 맞이하고 있습니다.",
+          expertComment: "데이터센터 하나가 먹는 전기가 도시 하나급입니다. 변압기 쇼티지(공급 부족)는 최소 2~3년은 지속될 구조적 문제입니다. 조정 시 매수 관점이 유효합니다.",
+          futureFlow: [30, 40, 55, 70, 80, 85, 95],
+          relatedStocksDetails: [
+            { ticker: "VRT", name: "버티브", rate: 5.2 },
+            { ticker: "ETN", name: "이튼", rate: 3.1 }
+          ]
+        },
+        {
+          rank: 3,
+          title: "비만 치료제 혁명",
+          subtitle: "단순 다이어트 약을 넘어 헬스케어의 중심으로",
+          badge: "트렌드 지속",
+          theme: "orange",
+          keyword: "GLP-1",
+          desc: "GLP-1 기반 비만 치료제가 심혈관 질환 등 다양한 적응증으로 확장되고 있습니다. 이는 단순 미용 목적을 넘어 필수 헬스케어 영역으로 자리 잡고 있음을 의미합니다.",
+          expertComment: "이제 비만약은 '보험 적용'이 논의되는 단계입니다. 시장의 파이가 미용 시장에서 의료 시장으로 10배 이상 커지는 초입 단계라고 판단됩니다.",
+          futureFlow: [20, 35, 50, 65, 75, 80, 85],
+          relatedStocksDetails: [
+            { ticker: "LLY", name: "일라이릴리", rate: 1.8 },
+            { ticker: "NVO", name: "노보노디스크", rate: 0.5 }
+          ]
+        }
+      ],
+      recentSearches: [
+        { id: 'r1', ticker: 'TSLA', name: '테슬라' },
+        { id: 'r2', ticker: 'AAPL', name: '애플' },
+        { id: 'r3', ticker: 'NVDA', name: '엔비디아' }
+      ],
+      searchResults: [],
+      searchResultSample: null
+    }
   };
 };

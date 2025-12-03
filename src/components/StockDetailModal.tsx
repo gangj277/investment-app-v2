@@ -66,7 +66,8 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
     const padding = { top: 20, right: 0, bottom: 20, left: 0 };
 
     const { points: coords, min: minVal, max: maxVal, avgY, effectiveMin, effectiveRange, graphWidth, graphHeight } = getChartCoordinates(chartPoints, svgWidth, svgHeight, padding);
-    const linePath = `M ${getBezierPath(coords)}`;
+    const rawPath = getBezierPath(coords);
+    const linePath = rawPath.startsWith('M') ? rawPath : `M ${rawPath}`;
 
     // Calculate Average Price Y-Coordinate
     const avgPriceY = averagePrice
@@ -179,7 +180,7 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
                         </div>
                     </div>
                     {!isLearningMode && (
-                        <button onClick={onClose} className="ml-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 absolute right-4 top-4">
+                        <button onClick={onClose} className="ml-4 p-2 rounded-full bg-black/50 hover:bg-zinc-800 text-white absolute right-6 top-6 z-50 backdrop-blur-md border border-white/10 transition-colors">
                             <X size={24} />
                         </button>
                     )}
@@ -326,9 +327,9 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
                                 </div>
                             )}
                         </div>
-                        <div className="flex items-start space-x-2 text-sm text-zinc-400 px-1 leading-relaxed bg-zinc-900/50 p-3 rounded-xl border border-white/5">
-                            <TrendingUp size={16} className="shrink-0 mt-0.5 text-zinc-500" />
-                            <span>{chartNarrative}</span>
+                        <div className="flex items-start space-x-3 text-sm text-zinc-300 px-4 py-3 leading-relaxed bg-zinc-800/40 rounded-xl border border-white/10 shadow-inner">
+                            <TrendingUp size={18} className="shrink-0 mt-0.5 text-indigo-400" />
+                            <span className="font-medium">{chartNarrative}</span>
                         </div>
                     </section>
 
@@ -360,12 +361,26 @@ const StockDetailModal: React.FC<StockDetailModalProps> = ({ stock, onClose, isL
                                             </div>
                                         </div>
                                         {/* Tug of War Bar */}
-                                        <div className="h-5 bg-black rounded-full relative overflow-hidden border border-white/5">
-                                            <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 via-amber-500/20 to-emerald-500/20" />
-                                            <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white/20" />
+                                        <div className="h-6 bg-zinc-900 rounded-full relative overflow-hidden border border-white/10 shadow-inner">
+                                            <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-transparent to-emerald-500/10" />
+
+                                            {/* Center Line */}
+                                            <div className="absolute left-1/2 top-1 bottom-1 w-0.5 bg-zinc-700 rounded-full" />
+
+                                            {/* Indicator */}
                                             <div
-                                                className={`absolute top-0 bottom-0 w-2 ${healthColorClass.split(' ')[1]} shadow-[0_0_15px_currentColor] transition-all duration-1000 ease-out rounded-full`}
-                                                style={{ left: `${healthScore}%` }}
+                                                className={`absolute top-1 bottom-1 w-1.5 ${healthColorClass.split(' ')[1]} shadow-[0_0_10px_currentColor] transition-all duration-1000 ease-out rounded-full z-10`}
+                                                style={{ left: `${healthScore}%`, transform: 'translateX(-50%)' }}
+                                            />
+
+                                            {/* Active Bar Fill (Optional - for better visual) */}
+                                            <div
+                                                className={`absolute top-2 bottom-2 left-1/2 ${healthScore > 50 ? 'right-auto' : 'left-auto right-1/2'} bg-current opacity-20 transition-all duration-1000`}
+                                                style={{
+                                                    width: `${Math.abs(healthScore - 50)}%`,
+                                                    left: healthScore > 50 ? '50%' : `${healthScore}%`,
+                                                    backgroundColor: healthScore > 50 ? '#10B981' : '#EF4444'
+                                                }}
                                             />
                                         </div>
                                         <div className="flex justify-between mt-2 text-[10px] font-bold text-zinc-600 px-1">
