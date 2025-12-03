@@ -10,12 +10,13 @@ import OnboardingFlow from './components/stock-detail/OnboardingFlow';
 import NotificationModal from './components/NotificationModal';
 import NarrativeIntro from './components/narrative/NarrativeIntro';
 import WatchpointBuilder from './components/narrative/WatchpointBuilder';
+import NotificationPopup from './components/NotificationPopup';
 import { TEXT } from './constants/text';
 
 type Tab = 'insight' | 'my-thesis' | 'discovery';
 
 const AppContent: React.FC = () => {
-  const { data, addToMyThesis } = useStore();
+  const { data, addToMyThesis, markNotificationAsRead } = useStore();
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('insight');
 
@@ -24,8 +25,23 @@ const AppContent: React.FC = () => {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [builderTarget, setBuilderTarget] = useState<Thesis | SearchResultSample | null>(null);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [popupNotification, setPopupNotification] = useState<Notification | null>(null);
 
   const unreadCount = data.notifications.filter(n => !n.isRead).length;
+
+  // Trigger Popup on Insight Tab
+  React.useEffect(() => {
+    if (activeTab === 'insight' && isOnboardingComplete) {
+      const unread = data.notifications.find(n => !n.isRead);
+      if (unread) {
+        // Delay slightly to simulate "live" feel
+        const timer = setTimeout(() => setPopupNotification(unread), 1000);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      setPopupNotification(null);
+    }
+  }, [activeTab, isOnboardingComplete, data.notifications]);
 
   const handleOnboardingComplete = (newThesis?: Thesis) => {
     setIsOnboardingComplete(true);
@@ -60,6 +76,19 @@ const AppContent: React.FC = () => {
     if (targetThesis) { setActiveTab('my-thesis'); setSelectedStock(targetThesis); }
   };
 
+  const handlePopupClick = (notification: Notification) => {
+    setPopupNotification(null);
+    markNotificationAsRead(notification.id);
+
+    // Navigate to Stock Detail
+    let targetThesis = data.myThesis.find(s => s.id === notification.stockId || s.ticker === notification.ticker);
+
+    if (targetThesis) {
+      setActiveTab('my-thesis');
+      setSelectedStock(targetThesis);
+    }
+  };
+
   return (
     <div className="h-screen w-full bg-[#000] flex justify-center items-center overflow-hidden font-sans text-white">
       <main className="w-full max-w-[430px] h-full bg-app-bg relative shadow-2xl flex flex-col overflow-hidden">
@@ -79,6 +108,15 @@ const AppContent: React.FC = () => {
               {activeTab === 'my-thesis' && <MyThesisTab onStockClick={setSelectedStock} onNavigate={setActiveTab} />}
               {activeTab === 'discovery' && <DiscoveryTab onStockClick={handleStockClickFromDiscovery} />}
             </div>
+
+            {/* Popup Notification */}
+            {popupNotification && (
+              <NotificationPopup
+                notification={popupNotification}
+                onClose={() => setPopupNotification(null)}
+                onClick={handlePopupClick}
+              />
+            )}
 
             <nav className="absolute bottom-0 left-0 right-0 z-50 bg-[#121212]/90 backdrop-blur-xl border-t border-white/5 pb-safe-bottom">
               <div className="flex justify-around items-center h-[88px] pb-4 px-2">

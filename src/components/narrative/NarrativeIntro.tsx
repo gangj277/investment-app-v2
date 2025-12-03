@@ -11,8 +11,8 @@ interface NarrativeIntroProps {
 
 const STEPS = [
   { id: 'history', title: 'Why Now?', icon: TrendingUp, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-  { id: 'floor', title: 'The Floor', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-  { id: 'upside', title: 'The Upside', icon: Zap, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+  { id: 'floor', title: '기초 체력', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  { id: 'upside', title: '상승 여력', icon: Zap, color: 'text-amber-400', bg: 'bg-amber-500/10' },
   { id: 'debate', title: 'Debate', icon: Scale, color: 'text-purple-400', bg: 'bg-purple-500/10' },
   { id: 'final', title: 'Final Bet', icon: Gavel, color: 'text-rose-400', bg: 'bg-rose-500/10' },
 ];

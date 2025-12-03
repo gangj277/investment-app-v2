@@ -16,6 +16,8 @@ interface LogicDetail {
   badge?: string;
   theme?: string;
   relatedStocksDetails?: RelatedStock[];
+  expertComment?: string;
+  futureFlow?: number[];
 }
 
 interface LogicDetailModalProps {
@@ -79,6 +81,49 @@ const LogicDetailModal: React.FC<LogicDetailModalProps> = ({ logic, onClose, onS
 
         <div className="p-6 space-y-6">
           {logic.desc && <p className="text-base text-zinc-200 leading-relaxed">{logic.desc}</p>}
+
+          {/* Expert's Comment */}
+          {logic.expertComment && (
+            <div className="bg-zinc-800/50 p-4 rounded-2xl border border-white/5 relative mt-2">
+              <div className="absolute -top-3 left-4 bg-[#121212] px-2 text-xs font-bold text-indigo-400">Expert's Comment</div>
+              <p className="text-sm text-zinc-300 italic leading-relaxed">"{logic.expertComment}"</p>
+            </div>
+          )}
+
+          {/* Future Expected Flow Graph */}
+          {logic.futureFlow && logic.futureFlow.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-bold text-zinc-500 uppercase tracking-wide">Future Expected Flow</div>
+              <div className="h-32 bg-gradient-to-b from-indigo-500/5 to-transparent rounded-2xl border border-white/5 relative overflow-hidden flex items-center justify-center">
+                <svg viewBox="0 0 100 50" className="w-full h-full p-4 overflow-visible">
+                  {/* Simple Grid */}
+                  <line x1="0" y1="25" x2="100" y2="25" stroke="#333" strokeDasharray="2 2" strokeWidth="0.5" />
+
+                  {/* Trend Line */}
+                  <path
+                    d={`M ${logic.futureFlow.map((val, i) =>
+                      `${(i / (logic.futureFlow!.length - 1)) * 100},${50 - (val / 100) * 50}`
+                    ).join(' L ')}`}
+                    fill="none"
+                    stroke="#6366f1"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+
+                  {/* End Point Dot */}
+                  <circle
+                    cx="100"
+                    cy={50 - (logic.futureFlow[logic.futureFlow.length - 1] / 100) * 50}
+                    r="2"
+                    fill="#6366f1"
+                    className="animate-pulse"
+                  />
+                </svg>
+                <div className="absolute bottom-2 right-4 text-[10px] text-indigo-400 font-bold">Consensus Trend</div>
+              </div>
+            </div>
+          )}
 
           {logic.relatedStocksDetails && logic.relatedStocksDetails.length > 0 && (
             <div className="space-y-3">
